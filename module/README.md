@@ -569,7 +569,11 @@ console.log(a.age) // 19
 ## 参考文献
 
 [CommonJS规范](https://javascript.ruanyifeng.com/nodejs/module.html)
+
 [ES Module 的语法](https://es6.ruanyifeng.com/#docs/module)
+
 [ES Module 的加载实现](https://es6.ruanyifeng.com/#docs/module-loader)
+
 [前端模块化开发解决方案详解](https://cloud.tencent.com/developer/article/1333185)
+
 [webpack模块化原理-commonjs](https://segmentfault.com/a/1190000010349749)
