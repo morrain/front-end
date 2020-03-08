@@ -520,7 +520,7 @@ let module = 'a.js'
 import { name } from module
 ```
 
-前面在[CommonJS 之 **require**](#CommonJS-之-**require**)有提到，`require` 的是被导出的值的拷贝。也就是说，一旦导出一个值，模块内部的变化就影响不到这个值。一起来看看，ES Module是什么样的。
+前面在[CommonJS 之 **require**](#CommonJS-之-require)有提到，`require` 的是被导出的值的拷贝。也就是说，一旦导出一个值，模块内部的变化就影响不到这个值。一起来看看，ES Module是什么样的。
 
 先回顾一下之前的例子：
 
