@@ -257,6 +257,117 @@ console.log(a.age) // 18
 
 ## CommonJS 实现
 
+了解 CommonJS 的规范后，不难发现我们在写符合 CommonJS 规范的模块时，无外乎就是使用了 `require` 、 `exports` 、 `module` 三个命令，然后一个 JavaScript 文件就是一个模块。如下所示：
+
+```js
+// a.js
+var name = 'morrain'
+var age = 18
+exports.name = name
+exports.getAge = function () {
+  return age
+}
+
+// b.js
+var a = require('a.js')
+console.log('a.name=', a.name)
+console.log('a.age=', a.getAge())
+
+var name = 'lilei'
+var age = 15
+exports.name = name
+exports.getAge = function () {
+  return age
+}
+
+// index.js
+var b = require('b.js')
+console.log('b.name=',b.name)
+```
+如果我们向一个立即执行函数提供 `require` 、 `exports` 、 `module` 三个参数，模块代码放在这个立即执行函数里面。模块的导出值放在 `module.exports` 中，这样就实现了模块的加载。如下所示：
+
+```js
+(function(module, exports, require) {
+// b.js
+var a = require("a.js")
+console.log('a.name=', a.name)
+console.log('a.age=', a.getAge())
+
+var name = 'lilei'
+var age = 15
+exports.name = name
+exports.getAge = function () {
+  return age
+}
+
+})(module, module.exports, require)
+```
+
+知道这个原理后，就很容易把符合 CommonJS 模块规范的项目代码，转化为浏览器支持的代码。很多工具都是这么实现的，从入口模块开始，把所有依赖的模块都放到各自的函数中，把所有模块打包成一个能在浏览器中运行的 JavaScript 文件。譬如 Browserify 、webpack 等等。
+
+我们以 webpack 为例，看看如何实现对 CommonJS 规范的支持。我们使用 webpack 构建时，把各个模块的文件内容按照如下格式打包到一个 JavaScript 文件中，因为它是一个立即执行的匿名函数，所以可以在浏览器直接运行。
+
+```js
+// bundle.js
+(function (modules) {
+    // 模块管理的实现
+})({
+  'a.js': function (module, module.exports, require) {
+    // a.js 文件内容
+  },
+  'b.js': function (module, module.exports, require) {
+    // b.js 文件内容
+  },
+  'index.js': function (module, module.exports, require) {
+    // index.js 文件内容
+  }
+})
+
+```
+接下来，我们需要按照 CommonJS 的规范，去实现模块管理的内容。首先我们知道，CommonJS 规范有说明，加载过的模块会被缓存，所以需要一个对象来缓存已经加载过的模块，然后需要一个 `require` 函数来加载模块，在加载时要生成一个 `module`，并且 `module` 上 要有一个 `exports` 属性，用来接收模块导出的内容。
+
+```js
+// bundle.js
+(function (modules) {
+  // 模块管理的实现
+  var installedModules = {}
+  /**
+   * 加载模块的业务逻辑实现
+   * @param {String} moduleName 要加载的模块名
+   */
+  var require = function (moduleName) {
+
+    // 如果已经加载过，就直接返回
+    if (installedModules[moduleName]) return installedModules[moduleName].exports
+
+    // 如果没有加载，就生成一个 module，并放到 installedModules
+    var module = installedModules[moduleName] = {
+      moduleName: moduleName,
+      exports: {}
+    }
+
+    // 执行要加载的模块
+    modules[moduleName].call(modules.exports, module, module.exports, require)
+
+    return module.exports
+  }
+
+  return require('index.js')
+})({
+  'a.js': function (module, module.exports, require) {
+    // a.js 文件内容
+  },
+  'b.js': function (module, module.exports, require) {
+    // b.js 文件内容
+  },
+  'index.js': function (module, module.exports, require) {
+    // index.js 文件内容
+  }
+})
+
+```
+可以看到， CommonJS 核心的规范，上面的实现中都满足了。非常简单，没想像的那么难。
+
 ## 其它前端模块化的方案
 
 我们对 CommonJS 的规范已经非常熟悉了，`require` 命令的基本功能是，读入并执行一个 JavaScript 文件，然后返回该模块的 exports 对象，这在服务端是可行的，因为服务端加载并执行一个文件的时间消费是可以忽略的，模块的加载是运行时同步加载的，`require` 命令执行完后，文件就执行完了，并且成功拿到了模块导出的值。
