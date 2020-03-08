@@ -4,6 +4,10 @@
 
 [本文配套PPT](./ppt.pdf)
 
+- [前端简史](../history/README.md)
+- [Node.js 换个角度看世界](../node/README.md)
+- [CommonJS：不是前端却革命了前端](../module/README.md)
+
 ## 什么是前端
 
 ---
