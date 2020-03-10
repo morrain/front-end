@@ -184,7 +184,11 @@ console.log(a.getAge())// 18
 
 ### CommonJS 之 **exports**
 
-为了方便，Node.js 在实现 CommonJS 规范时，为每个模块提供一个 `exports`的私有变量，指向 `module.exports`。
+为了方便，Node.js 在实现 CommonJS 规范时，为每个模块提供一个 `exports`的私有变量，指向 `module.exports`。你可以理解为 Node.js 在每个模块开始的地方，添加了如下这行代码。
+
+```js
+var exports = module.exports
+```
 
 于是上面的代码也可以这样写：
 ```js
@@ -196,6 +200,8 @@ exports.getAge = function(){
     return age
 }
 ```
+![](./img/exports.png)
+
 **有一点要尤其注意，`exports` 是模块内的私有局部变量，它只是指向了 `module.exports`，所以直接对 `exports` 赋值是无效的，这样只是让 `exports` 不再指向  `module.exports`了而已**  如下所示：
 
 ```js
@@ -204,6 +210,7 @@ var name = 'morrain'
 var age = 18
 exports = name
 ```
+![](./img/exports1.png)
 
 如果一个模块的对外接口，就是一个单一的值，可以使用 `module.exports` 导出
 
