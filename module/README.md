@@ -245,6 +245,8 @@ console.log(b.name) // 'rename'
 ```
 如上所示，第二次 require 模块A时，并没有重新加载并执行模块A。而是直接返回了第一次 require 时的结果，也就是模块A的 `module.exports`。
 
+![](./img/require-cache.png)
+
 还一点需要注意，CommonJS 模块的加载机制是，`require` 的是被导出的值的拷贝。也就是说，一旦导出一个值，模块内部的变化就影响不到这个值 。
 
 ```js
@@ -297,17 +299,17 @@ console.log('b.name=',b.name)
 
 ```js
 (function(module, exports, require) {
-// b.js
-var a = require("a.js")
-console.log('a.name=', a.name)
-console.log('a.age=', a.getAge())
+    // b.js
+    var a = require("a.js")
+    console.log('a.name=', a.name)
+    console.log('a.age=', a.getAge())
 
-var name = 'lilei'
-var age = 15
-exports.name = name
-exports.getAge = function () {
-  return age
-}
+    var name = 'lilei'
+    var age = 15
+    exports.name = name
+    exports.getAge = function () {
+      return age
+    }
 
 })(module, module.exports, require)
 ```
