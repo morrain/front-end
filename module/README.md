@@ -24,7 +24,7 @@
 
 ### 没有模块化时，前端是什么样子
 
-在之前的《前端简史》中，我们提到过 JavaScript 诞生之初只是作为一个脚本语言来使用，做一些简单的表单校验等等。所以代码量很少，最开始都是直接写到 `<script>` 标签里，如下所示：
+在之前的《Web：一路前行一路忘川》中，我们提到过 JavaScript 诞生之初只是作为一个脚本语言来使用，做一些简单的表单校验等等。所以代码量很少，最开始都是直接写到 `<script>` 标签里，如下所示：
 
 ```html
 // index.html
@@ -68,7 +68,7 @@ var name = 'hanmeimei'
 var age = 13
 ```
 
-不难发现，问题已经来了！ JavaScript 在 ES6 之前是没有模块系统，也没有封闭作用域的概念的，所以上面三个 JavaScript 文件里申明的变量都会存在于全局作用域中。不同的开发者维护不同的 JavaScript 文件，很难保证不和其它 JavaScript 文件冲突。全局变量污染开始成为开发者的噩梦。
+不难发现，问题已经来了！ JavaScript 在 ES6 之前是没有模块系统，也没有封闭作用域的概念的，所以上面三个 js 文件里申明的变量都会存在于全局作用域中。不同的开发者维护不同的 js 文件，很难保证不和其它 js 文件冲突。全局变量污染开始成为开发者的噩梦。
 
 ### 模块化的原型
 
@@ -223,7 +223,7 @@ module.exports = name
 
 ### CommonJS 之 **require**
 
-**`require` 命令的基本功能是，读入并执行一个 JavaScript 文件，然后返回该模块的 exports 对象。如果没有发现指定模块，会报错。**
+**`require` 命令的基本功能是，读入并执行一个 js 文件，然后返回该模块的 exports 对象。如果没有发现指定模块，会报错。**
 
 第一次加载某个模块时，Node.js 会缓存该模块。以后再加载该模块，就直接从缓存取出该模块的 `module.exports` 属性返回了。
 
@@ -236,7 +236,6 @@ exports.getAge = function(){
     return age
 }
 // b.js
-
 var a = require('a.js')
 console.log(a.name) // 'morrain'
 a.name = 'rename'
@@ -258,7 +257,6 @@ exports.age = age
 exports.setAge = function(a){
     age = a
 }
-
 // b.js
 var a = require('a.js')
 console.log(a.age) // 18
@@ -268,7 +266,7 @@ console.log(a.age) // 18
 
 ## CommonJS 实现
 
-了解 CommonJS 的规范后，不难发现我们在写符合 CommonJS 规范的模块时，无外乎就是使用了 `require` 、 `exports` 、 `module` 三个命令，然后一个 JavaScript 文件就是一个模块。如下所示：
+了解 CommonJS 的规范后，不难发现我们在写符合 CommonJS 规范的模块时，无外乎就是使用了 `require` 、 `exports` 、 `module` 三个东西，然后一个 js 文件就是一个模块。如下所示：
 
 ```js
 // a.js
@@ -278,7 +276,6 @@ exports.name = name
 exports.getAge = function () {
   return age
 }
-
 // b.js
 var a = require('a.js')
 console.log('a.name=', a.name)
@@ -290,7 +287,6 @@ exports.name = name
 exports.getAge = function () {
   return age
 }
-
 // index.js
 var b = require('b.js')
 console.log('b.name=',b.name)
@@ -314,22 +310,22 @@ console.log('b.name=',b.name)
 })(module, module.exports, require)
 ```
 
-知道这个原理后，就很容易把符合 CommonJS 模块规范的项目代码，转化为浏览器支持的代码。很多工具都是这么实现的，从入口模块开始，把所有依赖的模块都放到各自的函数中，把所有模块打包成一个能在浏览器中运行的 JavaScript 文件。譬如 Browserify 、webpack 等等。
+知道这个原理后，就很容易把符合 CommonJS 模块规范的项目代码，转化为浏览器支持的代码。很多工具都是这么实现的，从入口模块开始，把所有依赖的模块都放到各自的函数中，把所有模块打包成一个能在浏览器中运行的 js 文件。譬如 Browserify 、webpack 等等。
 
-我们以 webpack 为例，看看如何实现对 CommonJS 规范的支持。我们使用 webpack 构建时，把各个模块的文件内容按照如下格式打包到一个 JavaScript 文件中，因为它是一个立即执行的匿名函数，所以可以在浏览器直接运行。
+我们以 webpack 为例，看看如何实现对 CommonJS 规范的支持。我们使用 webpack 构建时，把各个模块的文件内容按照如下格式打包到一个 js 文件中，因为它是一个立即执行的匿名函数，所以可以在浏览器直接运行。
 
 ```js
 // bundle.js
 (function (modules) {
     // 模块管理的实现
 })({
-  'a.js': function (module, module.exports, require) {
+  'a.js': function (module, exports, require) {
     // a.js 文件内容
   },
-  'b.js': function (module, module.exports, require) {
+  'b.js': function (module, exports, require) {
     // b.js 文件内容
   },
-  'index.js': function (module, module.exports, require) {
+  'index.js': function (module, exports, require) {
     // index.js 文件内容
   }
 })
@@ -365,13 +361,13 @@ console.log('b.name=',b.name)
 
   return require('index.js')
 })({
-  'a.js': function (module, module.exports, require) {
+  'a.js': function (module, exports, require) {
     // a.js 文件内容
   },
-  'b.js': function (module, module.exports, require) {
+  'b.js': function (module, exports, require) {
     // b.js 文件内容
   },
-  'index.js': function (module, module.exports, require) {
+  'index.js': function (module, exports, require) {
     // index.js 文件内容
   }
 })
@@ -381,7 +377,7 @@ console.log('b.name=',b.name)
 
 ## 其它前端模块化的方案
 
-我们对 CommonJS 的规范已经非常熟悉了，`require` 命令的基本功能是，读入并执行一个 JavaScript 文件，然后返回该模块的 exports 对象，这在服务端是可行的，因为服务端加载并执行一个文件的时间消费是可以忽略的，模块的加载是运行时同步加载的，`require` 命令执行完后，文件就执行完了，并且成功拿到了模块导出的值。
+我们对 CommonJS 的规范已经非常熟悉了，`require` 命令的基本功能是，读入并执行一个 js 文件，然后返回该模块的 exports 对象，这在服务端是可行的，因为服务端加载并执行一个文件的时间消费是可以忽略的，模块的加载是运行时同步加载的，`require` 命令执行完后，文件就执行完了，并且成功拿到了模块导出的值。
 
 这种规范天生就不适用于浏览器，因为它是同步的。可想而知，浏览器端每加载一个文件，要发网络请求去取，如果网速慢，就非常耗时，浏览器就要一直等 `require` 返回，就会一直卡在那里，阻塞后面代码的执行，从而阻塞页面渲染，使得页面出现假死状态。
 
@@ -401,7 +397,7 @@ console.log('b.name=',b.name)
 
 翻译过来大致就是：
 
-RequireJS 是一个 JavaScript 文件和模块加载器。它非常适合在浏览器中使用，但它也可以用在其他 JavaScript 环境, 就像 Rhino 和 Node。 使用 RequireJS 加载模块化脚本能提高代码的加载速度和质量。
+RequireJS 是一个 js 文件和模块加载器。它非常适合在浏览器中使用，但它也可以用在其他 js 环境, 就像 Rhino 和 Node。 使用 RequireJS 加载模块化脚本能提高代码的加载速度和质量。
 
 它解决了 CommonJS 规范不能用于浏览器端的问题，而 AMD 就是 RequireJS 在推广过程中对模块定义的规范化产出。
 
@@ -417,7 +413,7 @@ RequireJS 是一个 JavaScript 文件和模块加载器。它非常适合在浏�
 define(id?, dependencies?, factory)
 ```
 
-id：可选参数，用来定义模块的标识，如果没有提供该参数，就使用 JavaScript 文件名（去掉拓展名）对于一个  JavaScript 文件只定义了一个模块时，这个参数是可以省略的。
+id：可选参数，用来定义模块的标识，如果没有提供该参数，就使用 js 文件名（去掉拓展名）对于一个  js 文件只定义了一个模块时，这个参数是可以省略的。
 dependencies：可选参数，是一个数组，表示当前模块的依赖，如果没有依赖可以不传
 factory：工厂方法，模块初始化要执行的函数或对象。如果为函数，它应该只被执行一次，返回值便是模块要导出的值。如果是对象，此对象应该为模块的输出值
 
@@ -433,7 +429,6 @@ define(function(){
         getAge: () => age
     }
 })
-
 // b.js
 define(['a.js'], function(a){
     var name = 'lilei'
@@ -449,11 +444,11 @@ define(['a.js'], function(a){
 
 它采用异步方式加载模块，模块的加载不影响它后面语句的运行。所有依赖这个模块的语句，都定义在回调函数中，等到加载完成之后，这个回调函数才会运行。
 
-RequireJS 的基本思想是，通过 define 方法，将代码定义为模块。当这个模块被 `require`时，它开始加载它依赖的模块，当所有依赖的模块加载完成后，开始执行回调函数，返回值是该模块导出的值。AMD 是 "Asynchronous Module Definition" 的缩写，意思就是"异步模块定义"。
+RequireJS 的基本思想是，通过 define 方法，将代码定义为模块。当这个模块被 `require` 时，它开始加载它依赖的模块，当所有依赖的模块加载完成后，开始执行回调函数，返回值是该模块导出的值。AMD 是 "Asynchronous Module Definition" 的缩写，意思就是"异步模块定义"。
 
 ### CMD (Common Module Definition)
 
-和 AMD 类似，CMD 是 Sea.js 在推广过程中对模块定义的规范化产出。Sea.js 是阿里的玉伯写的。它的诞生在 RequireJS之后，玉伯觉得 AMD 规范是异步的，模块的组织形式不够自然和直观。于是他在追求能像 CommonJS 那样的书写形式。于是就有了 CMD 。
+和 AMD 类似，CMD 是 Sea.js 在推广过程中对模块定义的规范化产出。Sea.js 是阿里的玉伯写的。它的诞生在 RequireJS 之后，玉伯觉得 AMD 规范是异步的，模块的组织形式不够自然和直观。于是他在追求能像 CommonJS 那样的书写形式。于是就有了 CMD 。
 
 ![](./img/seajs.png)
 
@@ -478,8 +473,8 @@ Sea.js 官网这么介绍 Sea.js：
 define(function(require, exports, module) {
 
   // 通过 require 引入依赖
-  var a = require('xxx');
-  var b = require('yyy');
+  var a = require('xxx')
+  var b = require('yyy')
 
   // 通过 exports 对外提供接口
   exports.doSomething = ...
@@ -487,7 +482,7 @@ define(function(require, exports, module) {
   // 或者通过 module.exports 提供整个接口
   module.exports = ...
 
-});
+})
 ```
 
 ```js
@@ -499,7 +494,6 @@ define(function(require, exports, module){
     exports.name = name
     exports.getAge = () => age
 })
-
 // b.js
 define(function(require, exports, module){
     var name = 'lilei'
@@ -514,11 +508,11 @@ define(function(require, exports, module){
 })
 ```
 
-**Sea.js 可以像 CommonsJS 那样同步的形式书写模块代码的秘诀在于： 当 b.js 模块被 `require` 时，b.js 加载后，Sea.js 会扫描 b.js 的代码，找到 `require` 这个关键字，提取所有的依赖项，然后加载，等到依赖的所有模块加载完成后，执行回调函数，此时再执行到 `require('a.js')`这行代码时，a.js 已经加载好在内存中了**
+**Sea.js 可以像 CommonsJS 那样同步的形式书写模块代码的秘诀在于： 当 b.js 模块被 `require` 时，b.js 加载后，Sea.js 会扫描 b.js 的代码，找到 `require` 这个关键字，提取所有的依赖项，然后加载，等到依赖的所有模块加载完成后，执行回调函数，此时再执行到 `require('a.js')` 这行代码时，a.js 已经加载好在内存中了**
 
 ### ES6 Module
 
-前面提到的 CommonJS 是服务于服务端的，而 AMD、CMD是服务于浏览器端的，但它们都有一个共同点：**都在代码运行后才能确定导出的内容**，[CommonJS 实现](#CommonJS-实现)中可以看到。
+前面提到的 CommonJS 是服务于服务端的，而 AMD、CMD 是服务于浏览器端的，但它们都有一个共同点：**都在代码运行后才能确定导出的内容**，[CommonJS 实现](#CommonJS-实现)中可以看到。
 
 还有一点需要注意，AMD 和 CMD 是社区的开发者们制定的模块加载方案，并不是语言层面的标准。**从 ES6 开始，在语言标准的层面上，实现了模块化功能，而且实现得相当简单，完全可以取代 CommonJS 和 CMD、AMD 规范，成为浏览器和服务器通用的模块解决方案**。
 
@@ -534,7 +528,7 @@ define(function(require, exports, module){
 
 #### ES6 Module 语法
 
-任何模块化，都必须考虑的两个问题就是导入依赖和导出接口。ES6 Module 也是如此，模块功能主要由两个命令构成：`export` 和 `import`。`export` 命令用于导出模块的对外接口，`import` 命令用于导入其他模块提供的功能。
+任何模块化，都必须考虑的两个问题就是导入依赖和导出接口。ES6 Module 也是如此，模块功能主要由两个命令构成：`export` 和 `import`。`export` 命令用于导出模块的对外接口，`import` 命令用于导入其他模块导出的内容。
 
 具体语法讲解请参考[阮一峰老师的教程](https://es6.ruanyifeng.com/#docs/module)，示例如下：
 
@@ -563,7 +557,6 @@ export {
 
 ```js
 // b.js
-
 import { name, getAge } from 'a.js'
 export const name = 'lilei'
 console.log(name) // 'morrain'
@@ -584,7 +577,6 @@ console.log(age) // 18
 
 ```js
 // a.js
-
 const name = 'morrain'
 const age = 18
 function getAge () {
@@ -596,7 +588,6 @@ export default {
 }
 
 // b.js
-
 import a from 'a.js'
 console.log(a.name) // 'morrin'
 const age = a.getAge()
@@ -604,7 +595,7 @@ console.log(age) // 18
 ```
 显然，一个模块只能有一个默认输出，因此 `export default` 命令只能使用一次。同时可以看到，这时 `import` 命令后面，不需要再使用大括号了。
 
-除了基础的语法外，还有 `as `的用法、`export` 和 `import` 复合写法、`export * from 'a'`、`import()动态加载` 等内容，可以自行学习。
+除了基础的语法外，还有 `as` 的用法、`export` 和 `import` 复合写法、`export * from 'a'`、`import()动态加载` 等内容，可以自行学习。
 
 前面提到的 Node.js 已经默认支持 ES6 Module ，浏览器也已经全面支持 ES6 Module。至于 Node.js 和 浏览器 如何使用 ES6 Module，可以自行学习。
 
@@ -616,7 +607,6 @@ CommonJS 只能在运行时确定导出的接口，实际导出的就是一个�
 
 ``` js
 // a.js
-
 export const name = 'morrain'
 const age = 18
 export function getAge () {
@@ -624,7 +614,6 @@ export function getAge () {
 }
 
 // b.js
-
 const age = getAge()
 console.log(age) // 18
 import { getAge } from 'a.js'
@@ -685,9 +674,11 @@ a.setAge(19)
 console.log(a.age) // 19
 ```
 
-ES6 Module 是 ES6 中对模块的规范，ES6 是 ECMAScript 6.0 的简称，是 JavaScript 语言的下一代标准，已经在 2015 年 6 月正式发布了。我们在第一节的前端简史中提过，ES6 从制定到发布历经了十几年，引入了很多的新特性以及新的机制，对于开发者而言，学习成本还是蛮大的。
+ES6 Module 是 ES6 中对模块的规范，ES6 是 ECMAScript 6.0 的简称，是 JavaScript 语言的下一代标准，已经在 2015 年 6 月正式发布了。我们在第一节的《Web：一路前行一路忘川》中提过，ES6 从制定到发布历经了十几年，引入了很多的新特性以及新的机制，对于开发者而言，学习成本还是蛮大的。
 
 下一节，聊聊 ES6+ 和 Babel，敬请期待……
+
+![](./img/babel.png)
 
 ## 参考文献
 

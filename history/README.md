@@ -245,6 +245,8 @@ Node = JavaScript + 操作系统 API
 
 下一节聊聊 Node
 
+![](./img/node.png)
+
 ## 参考文献
 
 [JavaScript 语言的历史](https://wangdoc.com/javascript/basic/history.html)
