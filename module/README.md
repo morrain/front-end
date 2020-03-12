@@ -2,6 +2,8 @@
 
 ![](./img/index.png)
 
+[本文配套PPT](./commonjs.pdf)
+
 - [Web：一路前行一路忘川](../history/README.md)
 - [Node.js：换个角度看世界](../node/README.md)
 - [CommonJS：不是前端却革命了前端](../module/README.md)

@@ -2,7 +2,7 @@
 
 ![](./img/index.png)
 
-[本文配套PPT](./ppt.pdf)
+[本文配套PPT](./node.pdf)
 
 - [Web：一路前行一路忘川](../history/README.md)
 - [Node.js：换个角度看世界](../node/README.md)
