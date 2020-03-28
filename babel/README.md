@@ -467,9 +467,212 @@ module.exports = { presets, plugins }
 
 #### @babel/plugin-transform-runtime
 
+在介绍 @babel/plugin-transform-runtime 的用途之前，先前一个例子：
 
+```js
+// src/index.js
+const add = (a, b) => a + b
 
+const arr = [1, 2]
+const hasThreee = arr.includes(3)
+new Promise(resolve=>resolve(10))
 
+class Person {
+  static a = 1;
+  static b;
+  name = 'morrain';
+  age = 18
+}
+
+// dist/index.js
+"use strict";
+
+require("core-js/modules/es.array.includes");
+
+require("core-js/modules/es.object.define-property");
+
+require("core-js/modules/es.object.to-string");
+
+require("core-js/modules/es.promise");
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var add = function add(a, b) {
+  return a + b;
+};
+
+var arr = [1, 2];
+var hasThreee = arr.includes(3);
+new Promise(function (resolve) {
+  return resolve(10);
+});
+
+var Person = function Person() {
+  _classCallCheck(this, Person);
+
+  _defineProperty(this, "name", 'morrain');
+
+  _defineProperty(this, "age", 18);
+};
+
+_defineProperty(Person, "a", 1);
+
+_defineProperty(Person, "b", void 0);
+
+```
+在编译的过程中，对于 api 类型的语法通过 `require("core-js/modules/xxxx")` polyfill 的方式来兼容，对于 syntax 类型的语法在转译的过程会在当前模块中注入类似 `_classCallCheck` 和 `_defineProperty` 的helper 函数来实现兼容。对于一个模块而言，可能还好，但对于项目中肯定是很多模块，每个模块模块都注入这些 helper 函数，势必会造成代码量变得很大。
+
+而 @babel/plugin-transform-runtime 就是为了复用这些 helper 函数，缩小代码体积而生的。当然除此之外，它还能为编译后的代码提供一个沙箱环境，避免全局污染。
+
+- 使用 @babel/plugin-transform-runtime
+
+1. 安装
+
+    ```
+    npm install --save-dev @babel/plugin-transform-runtime
+    npm install --save @babel/runtime
+    ```
+    其中 @babel/plugin-transform-runtime 是编译时使用的，安装为开发依赖，而 @babel/runtime 其实就是 helper 函数的集合，需要被引入到编译后代码中，所以安装为生产依赖
+
+2. 修改 Babel plugins 配置，增加 @babel/plugin-transform-runtime
+
+    ```js
+    // babel.config.js
+    const presets = [
+      [
+        '@babel/env',
+        {
+          debug: true,
+          useBuiltIns: 'usage',
+          corejs: 3,
+          targets: {}
+        }
+      ]
+    ]
+    const plugins = [
+      '@babel/plugin-proposal-class-properties',
+      [
+        '@babel/plugin-transform-runtime'
+      ]
+    ]
+
+    module.exports = { presets, plugins }
+
+    ```
+    之前的例子，再次编译后，可以看到，之前的 helper 函数，都变成类似 `require("@babel/runtime/helpers/classCallCheck")` 的实现了。
+    ```js
+    // dist/index.js
+    "use strict";
+
+    var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+    require("core-js/modules/es.array.includes");
+
+    require("core-js/modules/es.object.to-string");
+
+    require("core-js/modules/es.promise");
+
+    var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
+
+    var _defineProperty2 = _interopRequireDefault(require("@babel/runtime/helpers/defineProperty"));
+
+    var add = function add(a, b) {
+      return a + b;
+    };
+
+    var arr = [1, 2];
+    var hasThreee = arr.includes(3);
+    new Promise(function (resolve) {
+      return resolve(10);
+    });
+
+    var Person = function Person() {
+      (0, _classCallCheck2["default"])(this, Person);
+      (0, _defineProperty2["default"])(this, "name", 'morrain');
+      (0, _defineProperty2["default"])(this, "age", 18);
+    };
+
+    (0, _defineProperty2["default"])(Person, "a", 1);
+    (0, _defineProperty2["default"])(Person, "b", void 0);
+
+    ```
+
+- 配置 @babel/plugin-transform-runtime
+
+  到目前为止，对于 api 类型的语法还是通过 `require("core-js/modules/xxxx")` polyfill 的方式来实现的，例如为了支持  `Array.prototype.includes` 方法，需要 `require("core-js/modules/es.array.includes")` 在 `Array.prototype` 中添加 `includes` 方法来实现的，但这会导致一个问题，它是直接修改原型的，会造成全局污染。如果你开发的是独立的应用问题不大，但如果开发的是工具库，被其它项目引用，而恰好该项目自身实现了 `Array.prototype.includes` 方法，这样就出了大问题！
+  而 @babel/plugin-transform-runtime 可以解决这个问题，只需要配置 @babel/plugin-transform-runtime 的参数 corejs。该参数默认为 false，可以设置为 2 或者 3，分别对应 @babel/runtime-corejs2 和 @babel/runtime-corejs3。
+
+  **把 @babel/plugin-transform-runtime 的 corejs 的值设置为3，把 @babel/runtime 替换为 @babel/runtime-corejs3。**
+
+  **去掉 @babel/preset-env 的 useBuiltIns 和 corejs 的配置，去掉 core-js**
+
+  ```
+  npm uninstall @babel/runtime
+  npm install --save @babel/runtime-corejs3
+  npm uninstall core-js
+  ```
+
+  ```js
+    // babel.config.js
+  const presets = [
+    [
+      '@babel/env',
+      {
+        debug: true,
+        targets: {}
+      }
+    ]
+  ]
+  const plugins = [
+    '@babel/plugin-proposal-class-properties',
+    [
+      '@babel/plugin-transform-runtime',
+      {
+        corejs: 3
+      }
+    ]
+  ]
+
+  module.exports = { presets, plugins }
+
+  ```
+
+  ```js
+  // dist/index.js
+  "use strict";
+
+  var _interopRequireDefault = require("@babel/runtime-corejs3/helpers/interopRequireDefault");
+
+  var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/classCallCheck"));
+
+  var _defineProperty2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/defineProperty"));
+
+  var _promise = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/promise"));
+
+  var _includes = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/includes"));
+
+  var add = function add(a, b) {
+    return a + b;
+  };
+
+  var arr = [1, 2];
+  var hasThreee = (0, _includes["default"])(arr).call(arr, 3);
+  new _promise["default"](function (resolve) {
+    return resolve(10);
+  });
+
+  var Person = function Person() {
+    (0, _classCallCheck2["default"])(this, Person);
+    (0, _defineProperty2["default"])(this, "name", 'morrain');
+    (0, _defineProperty2["default"])(this, "age", 18);
+  };
+
+  (0, _defineProperty2["default"])(Person, "a", 1);
+  (0, _defineProperty2["default"])(Person, "b", void 0);
+  ```
+  **可以看到 Promise 和 arr.includes 的实现已经变成局部变量，并没有修改全局上的实现**
 
 ## 参考文献
 

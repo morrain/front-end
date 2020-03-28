@@ -3,12 +3,18 @@ const presets = [
     '@babel/env',
     {
       debug: true,
-      useBuiltIns: 'usage',
-      corejs: 3,
       targets: {}
     }
   ]
 ]
-const plugins = ['@babel/plugin-proposal-class-properties']
+const plugins = [
+  '@babel/plugin-proposal-class-properties',
+  [
+    '@babel/plugin-transform-runtime',
+    {
+      corejs: 3
+    }
+  ]
+]
 
 module.exports = { presets, plugins }
