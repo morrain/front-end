@@ -13,11 +13,11 @@
 
 ## Babel 是什么
 
-先来看下它在[自己官网](https://babeljs.io/)上的定义：
+先来看下它在[官网](https://babeljs.io/)上的定义：
 
 **Babel is a JavaScript compiler**
 
-没错就一句话，Babel 是 JavaScript 的编译器。至于什么是编译器，可以参考[the-super-tiny-compiler](https://github.com/thejameskyle/the-super-tiny-compiler)这个项目，可以找到很好的答案。
+没错就一句话，Babel 是 JavaScript 的编译器。至于什么是编译器，可以参考 [the-super-tiny-compiler](https://github.com/thejameskyle/the-super-tiny-compiler) 这个项目，可以找到很好的答案。
 
 > 本文是以 Babel 7.9.0 版本进行演示和讲解的，另外建议学习者阅读英文官网，中文官网会比原版网站慢一个版本，并且很多依然是英文的。
 
@@ -39,7 +39,7 @@ Babel 是巴比伦文化里的通天塔，用来给 `6to5` 这个项目命名真
 
 ## Babel 怎么用
 
-了解了 Babel 是什么后，很明显我们就要开始考虑怎么使用 Babel 来转化 ES6 的代码了，除了 Babel 本身提供的 cli 等工具外，它还支持和其它打包工具配合使用，譬如 webpack、rollup等等，可以参考[官网对不同平台提供的配置说明](https://babeljs.io/setup.html)。
+了解了 Babel 是什么后，很明显我们就要开始考虑怎么使用 Babel 来转化 ES6 的代码了，除了 Babel 本身提供的 cli 等工具外，它还支持和其它打包工具配合使用，譬如 webpack、rollup 等等，可以参考[官网对不同平台提供的配置说明](https://babeljs.io/setup.html)。
 
 > 本文为了感受 Babel 最原始的用法，不结合其它任何工具，直接使用 Babel 的 cli 来演示。
 
@@ -73,7 +73,6 @@ package.json 内容如下:
 
 ```
 npm install --save-dev @babel/core @babel/cli @babel/preset-env
-npm install --save @babel/polyfill
 ```
 
 > 后面会介绍这些包的作用，先看用法
@@ -97,9 +96,6 @@ npm install --save @babel/polyfill
     "@babel/cli": "^7.8.4",
     "@babel/core": "^7.9.0",
     "@babel/preset-env": "^7.9.0"
-  },
-  "dependencies": {
-    "@babel/polyfill": "^7.8.7"
   }
 }
 
@@ -163,7 +159,7 @@ var add = function add(a, b) {
 
 ```
 
-可以看到，ES6 的 `const` 被转化为 `var` ，箭头函数被转化为精通函数。同时打印出来如下日志：
+可以看到，ES6 的 `const` 被转化为 `var` ，箭头函数被转化为普通函数。同时打印出来如下日志：
 
 ```
 > babel src --out-dir dist
@@ -234,9 +230,9 @@ Babel 也不例外，如下图所示:
 
 ![](./img/babel-parser.jpg)
 
-因为 Babel 使用是 [`acorn`](https://github.com/acornjs/acorn) 这个引擎来做解析，这个库会先将源码转化为[抽象语法树 (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree)，再对 AST 作转换，最后将转化后 AST 输出，便得到了被 Babel 编译后的文件。
+因为 Babel 使用是 [`acorn`](https://github.com/acornjs/acorn) 这个引擎来做解析，这个库会先将源码转化为[抽象语法树 (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree)，再对 AST 作转换，最后将转化后的 AST 输出，便得到了被 Babel 编译后的文件。
 
-那 Babel 是如何知道该怎么转化的呢？答案是通过插件，Babel 为每一个新的语法提供了一个插件，在 Babel 的配置中配置了哪些插件，就会把插件对应的语法给转化掉。插件被命名为 `@babel/plugin-xxx`的格式。
+那 Babel 是如何知道该怎么转化的呢？答案是通过插件，Babel 为每一个新的语法提供了一个插件，在 Babel 的配置中配置了哪些插件，就会把插件对应的语法给转化掉。插件被命名为 `@babel/plugin-xxx` 的格式。
 
 ### Babel 组成
 
@@ -246,7 +242,7 @@ Babel 也不例外，如下图所示:
 
 上面提到过 @babel/preset-* 其实是转换插件的集合，最常用的就是 @babel/preset-env，它包含了 大部分 ES6 的语法，具体包括哪些插件，可以在 Babel 的日志中看到。如果源码中使用了不在 @babel/preset-env 中的语法，会报错，手动在 plugins 中增加即可。
 
-例如 ES6 明确规定，Class 内部只有静态方法，没有静态属性。但现在有一个提案提供了类的静态属性，写法是在实例属性的前面，加上static关键字。
+例如 ES6 明确规定，Class 内部只有静态方法，没有静态属性。但现在有一个提案提供了类的静态属性，写法是在实例属性的前面，加上 static 关键字。
 
 ```js
 // src/index.js
@@ -333,6 +329,145 @@ const add = (a, b) => a + b;
 ```
 
 **可以看到 `const` 和箭头函数都没有被转译，因为这个版本的 chrome 已经支持了这些特性。可以根据需求灵活的配置目标环境**
+
+> 为后方便后续的讲解，把 **targets** 的配置去掉，让 Babel 默认转译所有语法。
+
+#### @babel/polyfill
+
+polyfill 直译是垫片的意思，又是 Babel 里一个非常重要的概念。先看下面几行代码:
+
+```js
+// src/index.js
+const add = (a, b) => a + b
+
+const arr = [1, 2]
+const hasThreee = arr.includes(3)
+new Promise()
+```
+
+按之前的方法，执行 `npm run babel` 后，我们惊奇的发现，Array.prototype.includes 和 Promise 竟然没有被转译！
+
+```js
+// dist/index.js
+"use strict";
+
+var add = function add(a, b) {
+  return a + b;
+};
+
+var arr = [1, 2];
+var hasThreee = arr.includes(3);
+new Promise();
+```
+
+原来 Babel 把 ES6 的语法分为 syntax 和 api 两种类型。syntax 就是语法，像 `const`、`=>` 这些默认被 Babel 转译的就是 syntax 的类型。而对于那些可以通过改写覆盖的语法就认为是 api，像 `includes` 和 `Promise` 这些都属于 api。而 Babel 默认只转译 syntax 类型的，对于 api 类型的就需要通过 @babel/polyfill 来完成转译。 @babel/polyfill 实现的原理也非常简单，就是覆盖那些 ES6 新增的 api。示意如下：
+
+```js
+Object.defineProperty(Array.prototype, 'includes',function(){
+  ...
+})
+```
+
+> **由于 Babel 在 7.4.0 版本中宣布废弃 @babel/polyfill ，而是通过 core-js 替代，所以本文直接使用 core-js 来讲解 polyfill 的用法**
+
+- 安装 core-js
+
+  ```
+  npm install --save core-js
+  ```
+
+  **注意 `core-js` 要使用 --save 方式安装，因为它是需要被注入到源码中的，在执行代码前提供执行环境，用来解决 api 的注入**
+
+- 配置 useBuiltIns
+
+    在 @babel/preset-env 中通过 useBuiltIns 参数来控制 api 的注入。它可以设置为 'entry'、'usage' 和 `false` 。默认值为 `false`，不注入垫片。
+
+    **设置为 'entry' 时**，只需要在整个项目的入口处，导入 `core-js` 即可。
+
+    ```js
+    // src/index.js
+    import 'core-js'
+
+    const add = (a, b) => a + b
+
+    const arr = [1, 2]
+    const hasThreee = arr.includes(3)
+    new Promise()
+
+    // dist/index.js
+    "use strict";
+
+    require("core-js/modules/es7.array.includes");
+    require("core-js/modules/es6.promise");
+    //
+    // ……  这里还有很多
+    //
+    require("regenerator-runtime/runtime");
+    var add = function add(a, b) {
+      return a + b;
+    };
+    var arr = [1, 2];
+    var hasThreee = arr.includes(3);
+    new Promise();
+    ```
+
+    但是这有一个问题，Babel 是把所有 api 的实现都注入进来了，对于只用到比较少的项目来说完全没有必要。
+
+    **设置为 'usage' 时**，就不用在项目的入口处，导入 `core-js`了，Babel 会在转化源码的过程中根据使用的 api 来选择导出相应的实现。
+
+    ```js
+    // src/index.js
+    const add = (a, b) => a + b
+
+    const arr = [1, 2]
+    const hasThreee = arr.includes(3)
+    new Promise()
+
+    // dist/index.js
+    "use strict";
+
+    require("core-js/modules/es6.promise");
+
+    require("core-js/modules/es6.object.to-string");
+
+    require("core-js/modules/es7.array.includes");
+
+    var add = function add(a, b) {
+      return a + b;
+    };
+
+    var arr = [1, 2];
+    var hasThreee = arr.includes(3);
+    new Promise();
+    ```
+
+- 配置 corejs 的版本
+
+    当 useBuiltIns 设置为 'usage' 或者 'entry' 时，还需要设置 @babel/preset-env 的 corejs 参数，用来指定注入 api 的实现时，使用 `corejs` 的版本。否则 Babel 日志输出会有一个警告。
+
+最终的 Babel 配置如下：
+
+```js
+// babel.config.js
+const presets = [
+  [
+    '@babel/env',
+    {
+      debug: true,
+      useBuiltIns: 'usage',
+      corejs: 3,
+      targets: {}
+    }
+  ]
+]
+const plugins = ['@babel/plugin-proposal-class-properties']
+
+module.exports = { presets, plugins }
+```
+
+
+
+
 
 ## 参考文献
 
