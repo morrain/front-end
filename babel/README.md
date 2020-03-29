@@ -6,6 +6,7 @@
 - [Web：一路前行一路忘川](../history/README.md)
 - [Node.js：换个角度看世界](../node/README.md)
 - [CommonJS：不是前端却革命了前端](../module/README.md)
+- [Babel：把 ES6 送上天的通天塔](../babel/README.md)
 
 ## 前言
 
@@ -360,7 +361,7 @@ var hasThreee = arr.includes(3);
 new Promise();
 ```
 
-原来 Babel 把 ES6 的语法分为 syntax 和 api 两种类型。syntax 就是语法，像 `const`、`=>` 这些默认被 Babel 转译的就是 syntax 的类型。而对于那些可以通过改写覆盖的语法就认为是 api，像 `includes` 和 `Promise` 这些都属于 api。而 Babel 默认只转译 syntax 类型的，对于 api 类型的就需要通过 @babel/polyfill 来完成转译。 @babel/polyfill 实现的原理也非常简单，就是覆盖那些 ES6 新增的 api。示意如下：
+原来 Babel 把 ES6 的标准分为 syntax 和 api 两种类型。syntax 就是语法，像 `const`、`=>` 这些默认被 Babel 转译的就是 syntax 的类型。而对于那些可以通过改写覆盖的语法就认为是 api，像 `includes` 和 `Promise` 这些都属于 api。而 Babel 默认只转译 syntax 类型的，对于 api 类型的就需要通过 @babel/polyfill 来完成转译。 @babel/polyfill 实现的原理也非常简单，就是覆盖那些 ES6 新增的 api。示意如下：
 
 ```js
 Object.defineProperty(Array.prototype, 'includes',function(){
@@ -376,7 +377,7 @@ Object.defineProperty(Array.prototype, 'includes',function(){
   npm install --save core-js
   ```
 
-  **注意 `core-js` 要使用 --save 方式安装，因为它是需要被注入到源码中的，在执行代码前提供执行环境，用来解决 api 的注入**
+  **注意 `core-js` 要使用 --save 方式安装，因为它是需要被注入到源码中的，在执行代码前提供执行环境，用来实现 api 的注入**
 
 - 配置 useBuiltIns
 
@@ -411,9 +412,9 @@ Object.defineProperty(Array.prototype, 'includes',function(){
     new Promise();
     ```
 
-    但是这有一个问题，Babel 是把所有 api 的实现都注入进来了，对于只用到比较少的项目来说完全没有必要。
+    编译后，Babel 会把目标环境不支持的所有 api 都注入进来，不管是不是用到，这有一个问题，对于只用到比较少的项目来说完全没有必要，白白增加代码，浪费包体大小。
 
-    **设置为 'usage' 时**，就不用在项目的入口处，导入 `core-js`了，Babel 会在转化源码的过程中根据使用的 api 来选择导出相应的实现。
+    **设置为 'usage' 时**，就不用在项目的入口处，导入 `core-js`了，Babel 会在编译源码的过程中根据 api 的使用情况来选择注入相应的实现。
 
     ```js
     // src/index.js
@@ -522,7 +523,7 @@ _defineProperty(Person, "a", 1);
 _defineProperty(Person, "b", void 0);
 
 ```
-在编译的过程中，对于 api 类型的语法通过 `require("core-js/modules/xxxx")` polyfill 的方式来兼容，对于 syntax 类型的语法在转译的过程会在当前模块中注入类似 `_classCallCheck` 和 `_defineProperty` 的helper 函数来实现兼容。对于一个模块而言，可能还好，但对于项目中肯定是很多模块，每个模块模块都注入这些 helper 函数，势必会造成代码量变得很大。
+在编译的过程中，对于 api 类型的语法通过 `require("core-js/modules/xxxx")` polyfill 的方式来兼容，对于 syntax 类型的语法在转译的过程会在当前模块中注入类似 `_classCallCheck` 和 `_defineProperty` 的 helper 函数来实现兼容。对于一个模块而言，可能还好，但对于项目中肯定是很多模块，每个模块模块都注入这些 helper 函数，势必会造成代码量变得很大。
 
 而 @babel/plugin-transform-runtime 就是为了复用这些 helper 函数，缩小代码体积而生的。当然除此之外，它还能为编译后的代码提供一个沙箱环境，避免全局污染。
 
@@ -606,7 +607,7 @@ _defineProperty(Person, "b", void 0);
 
   **把 @babel/plugin-transform-runtime 的 corejs 的值设置为3，把 @babel/runtime 替换为 @babel/runtime-corejs3。**
 
-  **去掉 @babel/preset-env 的 useBuiltIns 和 corejs 的配置，去掉 core-js**
+  **去掉 @babel/preset-env 的 useBuiltIns 和 corejs 的配置，去掉 core-js。因为使用 @babel/runtime-corejs3 来实现对 api 类型语法的兼容，不用再使用 useBuiltIns 了**
 
   ```
   npm uninstall @babel/runtime
@@ -674,6 +675,71 @@ _defineProperty(Person, "b", void 0);
   ```
   **可以看到 Promise 和 arr.includes 的实现已经变成局部变量，并没有修改全局上的实现**
 
+
+### Babel polyfill 实现方式的区别
+
+截至目前为止，对于 api 类型的语法的 polyfill，一共有三种方式:
+
+1. 使用 @babel/preset-env ，useBuiltIns 设置为 'entry'
+2. 使用 @babel/preset-env ，useBuiltIns 设置为 'usage'
+3. 使用 @babel/plugin-transform-runtime
+
+前两种方式支持设置 targets ，可以根据目标环境来适配。useBuiltIns 设置为 'entry' 会注入目标环境不支持的所有 api 类型语法，useBuiltIns 设置为 'usage' 会注入目标环境不支持的所有**被用到**的 api 类型语法。注入的 api 类型的语法会污染全局。
+
+第三种方式目前不支持设置 targets，所以不会考虑目标环境是否已经支持，它是通过局部变量的方式实现了所有**被用到**的 api 类型语法，不会污染全局。
+
+
+针对第三种方式不支持设置 targets 的问题，Babel 正在考虑解决，目前意向的方案是通过 **Polyfill provider** 来统一 polyfill 的实现：
+
+1. 废弃 @babel/preset-env 中 useBuiltIns 和 corejs 两个参数，不再通过 @babel/preset-env 实现 polyfill 
+2. 废弃 @babel/plugin-transform-runtime 中的 corejs 参数，也不再通过 @babel/plugin-transform-runtime 来实现 polyfill
+3. 增加 polyfills 参数，类似于现在 presets 和 plugins，用来取代现在的 polyfill 方案
+4. 把 @babel/preset-env 中 targets 参数，往上提一层，和 presets、plugins、polyfills 同级别，并由它们共享
+
+这个方案实现后，Babel 的配置会是下面的样子：
+
+```js
+// babel.config.js
+const targets = [
+  '>1%'
+]
+const presets = [
+  [
+    '@babel/env',
+    {
+      debug: true
+    }
+  ]
+]
+const plugins = [
+  '@babel/plugin-proposal-class-properties'
+]
+const polyfills = [
+  [
+    'corejs3',
+    {
+      method: 'usage-pure'
+    }
+  ]
+]
+
+module.exports = { targets, presets, plugins, polyfills }
+
+```
+
+配置中的 method 值有 'entry-global'、'usage-global'、'usage-pure' 三种。
+
+1. 'entry-global' 等价于 @babel/preset-env 中的 useBuiltIns: 'entry'
+2. 'usage-global' 等价于 @babel/preset-env 中的 useBuiltIns: 'usage'
+3. 'usage-pure' 等价于 @babel/plugin-transform-runtime 中的 corejs
+
+本文为了讲解方便，都是用 Babel 原生的 @babel/cli 来编译文件，实际使用中，更多的是结合 webpack、rollup 这样第三方的工具来使用的。
+
+所以下一节，我们聊聊打包工具 webpack
+
+![](./img/webpack.png)
+
+
 ## 参考文献
 
 [6to5 JavaScript Transpiler Changes Name to Babel](https://www.infoq.com/news/2015/02/babel-new-name-for-6to5/)
@@ -681,3 +747,5 @@ _defineProperty(Person, "b", void 0);
 [Babel学习系列2-Babel设计，组成](https://zhuanlan.zhihu.com/p/57883838)
 
 [初学 Babel 工作原理](https://zhuanlan.zhihu.com/p/85915575)
+
+[RFC: Rethink polyfilling story](https://github.com/babel/babel/issues/10008)
