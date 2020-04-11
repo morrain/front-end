@@ -7,7 +7,7 @@
 
 - [Node.js：换个角度看世界](./node/README.md)
 
-    主要讲述了Node的前世今生、核心科技以及背后的故事
+    主要讲述了Node的前世今生、核心科技以及背后的故事
 
 - [CommonJS：不是前端却革命了前端](./module/README.md)
 
