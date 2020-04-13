@@ -560,9 +560,9 @@ export {
 
 ```js
 // b.js
-import { name, getAge } from 'a.js'
+import { name as aName, getAge } from 'a.js'
 export const name = 'lilei'
-console.log(name) // 'morrain'
+console.log(aName) // 'morrain'
 const age = getAge()
 console.log(age) // 18
 
