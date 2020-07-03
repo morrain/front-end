@@ -409,7 +409,7 @@ RequireJS 是一个 js 文件和模块加载器。它非常适合在浏览器中
 
 ```html
 <script src="require.js"></script>
-<script src="a.js"></script>
+<script src="b.js"></script>
 ```
 首先要在 html 文件中引入 `require.js` 工具库，就是这个库提供了定义模块、加载模块等功能。它提供了一个全局的 `define` 函数用来定义模块。所以在引入 `require.js` 文件后，再引入的其它文件，都可以使用 `define` 来定义模块。
 
@@ -468,7 +468,7 @@ Sea.js 官网这么介绍 Sea.js：
 
 ```html
 <script src="sea.js"></script>
-<script src="a.js"></script>
+<script src="b.js"></script>
 ```
 首先要在 html 文件中引入 `sea.js` 工具库，就是这个库提供了定义模块、加载模块等功能。它提供了一个全局的 `define` 函数用来定义模块。所以在引入 `sea.js` 文件后，再引入的其它文件，都可以使用 `define` 来定义模块。
 
