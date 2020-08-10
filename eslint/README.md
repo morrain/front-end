@@ -1,6 +1,8 @@
-# webpack：它是如此，但远不止于此
+# ESlint：守住优雅的护城河
 
 ![](./img/index.png)
+
+[本文配套PPT](./eslint.pdf)
 
 - [Web：一路前行一路忘川](../history/README.md)
 - [Node.js：换个角度看世界](../node/README.md)
@@ -11,12 +13,3 @@
 
 ## 前言
 
-## 关于 webpack 
-
-## 使用 webpack 
-
-## loader
-
-## plugin
-
-## 参考文献
