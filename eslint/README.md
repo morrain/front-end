@@ -207,6 +207,102 @@ module.exports = {
 }
 ```
 
+#### 环境与全局变量
+
+demo 中的 env 配置就是为相应的环境定义了一组预定义的全局变量。从之前的例子中我们已经看到，ESLint 会检测出来未定义的变量并报错，但有一些是运行环境或者框架提供的全局变量，譬如 jQuery 提供的 `$`，此时有如下几种解决方案：
+
+1. 在你的 JavaScript 源码文件中，用注释指定全局变量，格式如下：
+
+```js
+/* global $ */
+
+const dom = $('id')
+```
+
+2. 在配置文件中配置全局变量，将 globals 配置属性设置为一个对象，该对象包含以你希望使用的每个全局变量。对于每个全局变量键，将对应的值设置为 "writable" 以允许重写变量，或 "readonly" 不允许重写变量。例如：
+
+```json
+{
+    "globals": {
+        "$": "readonly"
+    }
+}
+```
+3. 使用 env 配置。为了避免上面两种方案需要一一配置每一个全局变量的麻烦，ESLint 预设了好多环境全局变量集合，譬如我们要使用 jQuery 提供的全局变量，只要需要在 env 配置中添加 `jquery:true`就可以了。
+
+demo 中 env 的配置，`es2020:true` 表示增加了 es2020 的语法特性，`node:true` 表示增加 node 中所有的全局变量。更多的环境可以参考官网[指定环境](https://cn.eslint.org/docs/user-guide/configuring#specifying-environments) 相关章节。
+
+#### 扩展
+
+在 .eslintrc.js 中 rules 用来配置 ESLint 的规则，具体配置规则的方法请参考官网[如何配置规则](https://cn.eslint.org/docs/user-guide/configuring#configuring-rules)以及[所有规则的说明](https://cn.eslint.org/docs/rules/)，这里不作详细介绍，同样为了方便使用，ESLint 使用 `extends` 配置来一次性生效一整套规则。譬如 demo 中 `rules` 中没有配置任何规则，因为通过 `extends` 配置了符合 standardjs 规范的规则集合。
+
+ESLint支持三种类型的扩展：
+
+1. `eslint:` 开头的 ESLint 官方扩展。包括 `eslint:recommended` 和 `eslint:all`，其中 `eslint:recommended` 是推荐的一套规则，`eslint:all` 是 ESLint 中的所有规则，不推荐使用，因为可能随时被 ESLint 更改。
+
+2. 共享的扩展。通过 npm 提供一套共享的配置，包名前缀必须为 `eslint-config-``，extends` 属性值可以省略包名的前缀 `eslint-config-`。demo 中 `stanard` 对应的就是 package.json 中 'eslint-config-standard' 这个包提供的一套规则。
+
+3. 插件中提供的扩展。在 demo 初始化时，我们可以看到 `eslint-plugin-node` 等插件包被安装，这些插件包是 `eslint-config-standard` 的依赖，所以会被自动安装，这些插件包也提供了一些规则可供扩展。
+
+    譬如如下代码在 node 的模块中写法是错误的，应该写成 `module.exports`，如果想要 ESLint 能检查出这个错误，就需要增加 `eslint-plugin-node` 包中提供的规则到扩展中。
+
+    ```js
+    // src/index.js
+    exports = {
+      foo: 1
+    }
+    ```
+    ```js
+    // .eslintrc.js
+    extends: [
+      'standard',
+      'plugin:node/recommended'
+    ],
+    ```
+
+    > 由于 `eslint-plugin-node` 已经被默认安装了，所以不需要再单独安装，对于没有安装的插件包，如果想使用它提供的规则，需要手动安装这个插件包。
+
+#### 插件
+
+上面讲扩展时，已经提到了如何加载插件中的扩展配置。既然已经有了这么多扩展可以使用，为什么还需要插件呢？因为 ESLint 只能检查标准的 JavaScript 语法，如果你使用 Vue 单文件组件， ESLint 就束手无策了。这个时候，相应框架就会提供配套的插件来定制特定的规则进行检查。插件扩展类似，也有固定的前缀 `eslint-plugin-`，配置时可以有省略前缀。
+
+我们新加一个 Vue 的单文件组件如下，执行 `npm run eslint` 后发现没有效果，没不能检查 .vue 中的错误，此时就需要安装 `eslint-plugin-vue` 插件。
+
+```html
+// src/index.vue
+<script>
+let a = 10
+const b = 15
+const sum = a + d
+console.log(sum)
+</script>
+```
+
+```
+npm i -D eslint-plugin-vue
+```
+安装后在 .eslintrc.js 中配置插件，有两种方式
+
+1. 通过 plugins 配置
+
+    ```js
+    module.exports = {
+      plugins: ['vue']
+    }
+    ```
+    配置完成执行 `npm run eslint` 发现并没有检查 src/index.vue 文件，原来 ` plugins: ['vue']` 只是声明想要引用的 `eslint-plugin-vue` 提供的规则，但是具体用哪些，怎么用，还是需要在 rules 中逐一配置。所以一般我们使用第二种方式配置插件。
+
+2. 通过 extends 配置，即上述的配置扩展的方式。
+
+    ```js
+    module.exports = {
+      extends: ['plugin:vue/recommended']
+    }
+    ```
+    通过这种方式既加载了插件又指定了使用插件提供的规则，已经能成功检查 vue 文件中上的代码，如下图所示：
+    ![](./img/vue.png)
+
+
 
 
 ## 如何守住优雅的护城河
@@ -238,5 +334,7 @@ commitlint && husky
 [JS Linter 进化史](https://zhuanlan.zhihu.com/p/34656263/)
 
 《JavaScript语言精粹》
+
+[ESLint 工作原理探讨](https://zhuanlan.zhihu.com/p/53680918)
 
 

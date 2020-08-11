@@ -4,7 +4,9 @@ module.exports = {
     node: true
   },
   extends: [
-    'standard'
+    'standard',
+    'plugin:node/recommended',
+    'plugin:vue/recommended'
   ],
   parserOptions: {
     ecmaVersion: 11,
