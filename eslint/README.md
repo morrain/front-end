@@ -82,7 +82,7 @@ JSLint 是从 JSHint 继承而来，所以沿用了 [JSLint Top Down Operator Pr
 
 > 参考[Web：一路前行一路忘川](../history/README.md)中 ES6 的相关内容。
 
-ES6 发布后，因为新增了很多语法，JSHint 短期内无法提供支持，而 ESLint 只需要有合适的解析器就能够进行 lint 检查。这时 Babel 为 ESLint 提供了支持，开发了 babel-eslint，让ESLint 成为最快支持 ES6 语法的 lint 工具。
+ES6 发布后，因为新增了很多语法，JSHint 短期内无法提供支持，而 ESLint 只需要有合适的解析器就能够进行 lint 检查。这时 Babel 为 ESLint 提供了支持，开发了 babel-eslint，让 ESLint 成为最快支持 ES6 语法的 lint 工具。
 
 
 ## ESLint 怎么用
@@ -104,7 +104,110 @@ npm i -D eslint
 ./node_modules/.bin/eslint --init
 ```
 
+在初始化的过程中，会让你选择一些配置，譬如 如何使用 ESLint？我们选择第三项，功能最多。
+
+![](./img/use.png)
+
+逐一选择完 ESLint 的使用配置后，会在项目根目录生成 `.eslintrc.js` 配置文件，同时会安装需要的 npm 包。 demo 中安装的 npm 包有：
+
+`eslint-config-standard`、`eslint-plugin-import`、`eslint-plugin-node`、`eslint-plugin-promise`、`eslint-plugin-standard`
+
+demo 中选择如下所示：
+
+![](./img/init.png)
+
+初始化后，生成的配置内容如下所示，具体配置项的含义，后面我们再聊
+
+```js
+// .eslintrc.js
+module.exports = {
+  env: {
+    es2020: true,
+    node: true
+  },
+  extends: [
+    'standard'
+  ],
+  parserOptions: {
+    ecmaVersion: 11,
+    sourceType: 'module'
+  },
+  rules: {
+  }
+}
+```
+
+**需要强调的是在选择代码风格时，我选择了比较流行的 [standard](https://github.com/standard/standard/blob/master/docs/README-zhcn.md) 规范。**
+
+接下来我们就可以使用 ESLint 来检查和修复代码了。首先在 demo 项目中，新建 src 目录，并新建 index.js 文件，内容如下：
+
+```js
+// src/index.js
+let a = 10;
+let b = 15;
+let sum = a + d;
+console.log(sum);
+```
+同时，在 package.json 中，增加 eslint 命令 `eslint src/**` 来检查 src 目录下的所有文件。
+```json
+//package.json
+"scripts": {
+  "eslint": "eslint src/**"
+}
+```
+
+在 demo 目录执行 `npm run eslint` 结果如下：
+
+![](./img/errors.png)
+
+可以看到，检查出来了如此多的错误，其中 'let 要使用 const 替换'，'不能使用封号'等属于 `standard` 规范中指定的规则，除了风格外，还检查出了'未定义的变量'等语法错误，并逐一给出提示。
+
+ 如果想自动修复检查出来的问题，怎么办呢？ eslint 支持使用 `--fix` 参数。修改 package.json 中的 eslint 命令为 `eslint src/** --fix`
+
+ 再次执行 `npm run eslint` 结果如下：
+
+ ![](./img/fix.png)
+
+ 打开 `src/index.js` 文件发现，内容已经发生了改变：
+
+ ```js
+// src/index.js
+const a = 10
+const b = 15
+const sum = a + d
+console.log(sum)
+```
+
+**可以看到，ESLint 自动修复了可以被修复的风格问题，同时对于不能被自动修复问题给出提示。**
+
+> 更多 eslint cli 配置参数,请参考官网[cli](https://cn.eslint.org/docs/user-guide/command-line-interface)的详细介绍。
+
+到这里我们已经‘挖好了护城河’，可是河里并没有水，敌人想要过来依然可以畅行无阻。完全依赖开发人员自觉手动运行 `npm run eslint` 来完成，那怎么样才能让让‘护城河’真正发挥作用呢？我们先看下 ESLint 常见的配置含义，然后在 [如何守住优雅的护城河](#如何守住优雅的护城河)详细介绍。
+
 ### 常用配置规则
+
+刚才在初始化之后，在项目根目录生成了 .eslintrc.js 文件，这里存放了所有 eslint 的配置项。
+
+```js
+module.exports = {
+  env: {
+    es2020: true,
+    node: true
+  },
+  extends: [
+    'standard'
+  ],
+  parserOptions: {
+    ecmaVersion: 11,
+    sourceType: 'module'
+  },
+  rules: {
+
+  }
+}
+```
+
+
 
 ## 如何守住优雅的护城河
 
