@@ -473,10 +473,44 @@ npm i -D commitizen conventional-changelog standard-version
 
 通过此方式提交，提交的日志是格式统一的，然后就是使用 `npm run version` 来生成 CHANGELOG 文件了。
 
+standard-version 会自动 bump 项目的版本号，并生成两个版本之间的提交日志记录文件，然后打个版本 tag 上传到仓库。更多关于 standard-version 的功能请参考官网文档 [standard-version](https://github.com/conventional-changelog/standard-version) 
+
+![](./img/version.png)
+
 
 ### 最后一道防线
 
-commitlint && husky
+现在开发如果使用 `npm run c` 来提交修改，那么一切都会非常美好，可是万一开发忘了使用 `npm run c` 来提交修改，直接使用 git 命令，或者其它工具提交改动，怎么办？如何守好最后一道防线？
+
+答案就是在提交时对提交信息进行校验，如果不符合要求就不让提交，并提示。校验的工作由 [commitlint](https://github.com/conventional-changelog/commitlint) 来完成，校验的时机则由 [husky](https://github.com/typicode/husky#readme) 来指定。 husky 继承了 Git 下所有的钩子，在触发钩子的时候，husky 可以阻止不合法的 commit，push 等等。
+
+1. 安装并配置
+
+    ```
+    npm install --save-dev @commitlint/{config-conventional,cli}
+
+    echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
+    ```
+
+    `@commitlint/cli` 用来执行检查，`@commitlint/config-conventional` 是检查的标准，即提交的信息是否符合这个标准的要求，只有符合要求才允许提交。
+
+    生成配置文件，指定要使用的规范，同时增加 husky 中的 'commit-msg' 钩子。配置完成后，再通过非 `npm run c` 途径的提交都会被拦截并报错。 
+
+    ```json
+    // package.json
+    {
+      "husky": {
+        "hooks": {
+          "pre-commit": "lint-staged",
+          "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+        }
+      }
+    }
+    ```
+
+2. 错误提交时的校验
+
+    ![](./img/commitlint.png)
 
 ## 总结
 

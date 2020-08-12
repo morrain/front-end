@@ -19,7 +19,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "lint-staged": {
@@ -36,6 +37,8 @@
   "author": "morrain",
   "license": "ISC",
   "devDependencies": {
+    "@commitlint/cli": "^9.1.1",
+    "@commitlint/config-conventional": "^9.1.1",
     "commitizen": "^4.1.2",
     "cz-conventional-changelog": "^3.2.0",
     "eslint": "^7.6.0",
