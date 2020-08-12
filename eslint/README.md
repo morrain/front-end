@@ -358,6 +358,26 @@ ESLint 默认是使用 [ESPree](https://github.com/eslint/espree)作为其解析
 
 可以看到，index.vue 文件也已经变红，里面的错误也能够被检测了，并且在编辑器的“问题”栏也能显示项目所有的 7 条错误，和运行 `npm run eslint` 效果一样了。
 
+这样一来，开发时就能有错误提示，根据提示修改就好了，但我们之前提到运行 `npm run eslint` 可以通过 `--fix` 参数来自动修复可以修复的问题，譬如格式问题，`let` 改成 `const` 等这些问题。
+
+**那在开发时，是否也可以对于检测出来的错误自动修复呢？**
+
+三种方案，可以根据自喜好选择：
+
+1. 设置保存时自动修复
+
+    ![](./img/autofix.png)
+
+2. 调出 VS Code 编辑器的命令面板，找到 ESLint 插件提供的修复命令
+
+    ![](./img/autofix1.png)
+
+3. 将 ESLint 插件提供的修复命令设置成喜欢的快捷键，使用快捷键修复
+
+此时我们发现，自动修复又是只针对 index.js 文件生效，同样的依然要配置 ESLint 的插件，使其支持 Vue 文件的自动修复功能。
+
+![](./img/vue_autofix.png)
+
 ### 将乐趣进行到底
 
 husky && lint-staged
