@@ -1,6 +1,6 @@
 <script>
-let a = 10
+const a = 10
 const b = 15
-const sum = a + d
+const sum = a + b
 console.log(sum)
 </script>
