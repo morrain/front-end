@@ -393,14 +393,42 @@ npm i -D husky
 {
   "husky": {
     "hooks": {
-      "pre-commit": "eslint --fix"
+      "pre-commit": "eslint src/** --fix"
     }
   }
 }
 ```
 
+![](./img/commit.png)
 
-husky && lint-staged
+此时提交前会检查 src 下的所有文件，由于 demo 中源码是有问题的，ESLint 检查通不过，所以现在无法提交，从而阻断开发忘记修复 ESLint 检查出来问题的情况。
+
+那对于老的项目，可以已能存在很多遗留的风格问题，导致 ESLint 检查通不过，此时又不可能把所有问题都一一修复掉，阻止提交势必会造成影响。另外对于单次提交而言，如果每次都检查 src 下的所有文件，也是没有必要的。所以我们需要使用 [lint-staged](https://github.com/okonet/lint-staged) 工具只针对当前修改的部分进行检测。
+
+2. 安装并配置 lint-staged
+
+```
+npm i -D lint-staged
+```
+
+```json
+// package.json
+{
+    "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,vue}": [
+      "eslint --fix",
+      "git add"
+    ]
+  }
+}
+```
+
+具体配置请参考 [lint-staged](https://github.com/okonet/lint-staged) 官网文档。示例中配置表示的是，对当前改动的 .js 和 .vue 文件在提交时进行检测和自动修复，自动修复完成后 add 到 git 暂存区。如果有无法修复的错误会报错提示。
 
 ### 安装“黑匣子”
 
