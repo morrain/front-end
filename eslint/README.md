@@ -432,7 +432,47 @@ npm i -D lint-staged
 
 ### 安装“黑匣子”
 
-standard-version && commitizen
+飞起上都装有黑匣子，当出现故障时，可以很方便的回溯航行记录，发现问题。我们的代码仓库也一样，每次提交都应该有记录。但每个同学提交时的信息各不一样，没有统一的格式，导致后面回溯提交记录时眼花缭乱，效率很低。
+
+接下来看下，如何约束提交，来守住提交日志优雅的这道大门。
+
+[commitizen](https://github.com/commitizen/cz-cli) 是用来格式化 git commit message 的工具，它提供了一种问询式的方式去获取所需的提交信息。
+
+[conventional-changelog](https://github.com/conventional-changelog/conventional-changelog)是用来规定提交时需要输入哪些信息，譬如提交的类型是修复问题还是功能开发，提交影响范围等等，conventional-changelog 是官网提供的规则，完全可以根据项目实际情况自已开发适合的规则。
+
+[standard-version](https://github.com/conventional-changelog/standard-version) 提交信息并约束后，提交的日志信息就会比较统一，使用 standard-version 很容易自动生成提交的日志 CHANGELOG 文件
+
+1. 安装并配置
+
+```
+npm i -D commitizen conventional-changelog standard-version
+```
+
+```json
+//package.json
+{
+  "scripts": {
+    "c": "git-cz",
+    "version": "standard-version"
+  },
+  "standard-version": {
+    "changelogHeader": "# Changelog\n\n所有项目的变更记录会记录在如下文件.\n",
+    "dryRun": true
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  }
+}
+```
+
+配置完成后，使用 `npm run c` 来提交修改，会如现如下图所示的问询式的交互提示，根据规则要求填写对应的内容就好了。
+
+![](./img/commitzen.png)
+
+通过此方式提交，提交的日志是格式统一的，然后就是使用 `npm run version` 来生成 CHANGELOG 文件了。
+
 
 ### 最后一道防线
 

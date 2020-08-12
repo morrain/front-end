@@ -4,6 +4,8 @@
   "description": "eslint demo",
   "main": "src/index.js",
   "scripts": {
+    "c": "git-cz",
+    "version": "standard-version",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -11,6 +13,10 @@
     "demo",
     "config"
   ],
+  "standard-version": {
+    "changelogHeader": "# Changelog\n\n所有项目的变更记录会记录在如下文件.\n",
+    "dryRun": true
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -22,9 +28,16 @@
       "git add"
     ]
   },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
   "author": "morrain",
   "license": "ISC",
   "devDependencies": {
+    "commitizen": "^4.1.2",
+    "cz-conventional-changelog": "^3.2.0",
     "eslint": "^7.6.0",
     "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.22.0",
@@ -33,6 +46,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "eslint-plugin-vue": "^6.2.2",
     "husky": "^4.2.5",
-    "lint-staged": "^10.2.11"
+    "lint-staged": "^10.2.11",
+    "standard-version": "^8.0.2"
   }
 }
