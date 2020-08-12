@@ -332,7 +332,7 @@ ESLint 默认是使用 [ESPree](https://github.com/eslint/espree)作为其解析
 
 ### 享受开发时的乐趣
 
-首当其冲的需求就是在开发的过程中最好就能做代码检测，而不是需要代码开发完成后，运行 `npm run eslint` 才能看到错误，此时可能已经一堆错误了。
+**首当其冲的需求就是在开发的过程中最好就能做代码检测**，而不是需要代码开发完成后，运行 `npm run eslint` 才能看到错误，此时可能已经一堆错误了。
 
 以 VS Code 编辑器为例（其它编辑器应该也有类似的插件），安装 [ESLint 扩展插件](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) 。该编辑器插件会读取当前项目中的 .eslintrc.js 的配置，并在编辑器中提示出来。
 
@@ -379,6 +379,26 @@ ESLint 默认是使用 [ESPree](https://github.com/eslint/espree)作为其解析
 ![](./img/vue_autofix.png)
 
 ### 将乐趣进行到底
+
+现在我们已经能做到了，在开发时检测出来错误并且方便开发修复问题，这依赖于开发同学自觉，如果开发同学不自觉或者忘记了，此时提交代码就依然会把错误的代码提交到仓库中去。此时我们需要借助 [husky](https://github.com/typicode/husky#readme) 来拦截 git 操作，在 git 操作之前再进行一次代码检测。
+
+1. 安装并配置 husky
+
+```
+npm i -D husky
+```
+
+```json
+// package.json
+{
+  "husky": {
+    "hooks": {
+      "pre-commit": "eslint --fix"
+    }
+  }
+}
+```
+
 
 husky && lint-staged
 
