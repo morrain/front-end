@@ -302,14 +302,61 @@ npm i -D eslint-plugin-vue
     通过这种方式既加载了插件又指定了使用插件提供的规则，已经能成功检查 vue 文件中上的代码，如下图所示：
     ![](./img/vue.png)
 
+#### 解析器及其配置
 
+```js
+module.exports = {
+  parserOptions: {
+    ecmaVersion: 11,
+    sourceType: 'module'
+  }
+}
+```
+
+demo 中 parserOptions 为解析器配置，ESLint 默认只支持 ES5 的语法，但可以通过解析器配置来设置支持的 ES 版本，譬如 demo 中的 `ecmaVersion:11` 表示支持 ES11(即ES2020) 的语法，**这里需要注意的是通过解析器配置只是支持语法，对于该版本新增加的全局变量依然要通过 `env` 配置来完成支持，相关说明以及更多的解析器配置请参考官网[指定解析器配置](https://cn.eslint.org/docs/user-guide/configuring#specifying-parser-options)** 
+
+ESLint 默认是使用 [ESPree](https://github.com/eslint/espree)作为其解析器的，但也可以通过 parser 字段指定一个不同的解析器，可以参考官网[指定解析器](https://cn.eslint.org/docs/user-guide/configuring#specifying-parser)。
+
+那为什么需要指定解析器呢？因为 ESLint 默认的解析器只支持已经形成 ES 标准的语法特性，对于处于实验阶段以及非标准的（譬如 Flow、TypeScript等）需要使用 Babel 转换的语法，就需要指定由 Babel 提供的 `@babel/eslint-parser` 了。由此可见，正常情况下，是不需要指定第三方的解析器的。
+
+以 `@babel/eslint-parser` 为例，当指定它作为 ESLint 的解析器后，我们开发的源码首先由 `@babel/eslint-parser` 根据 Babel 的配置([参考Babel:把 ES6 送上天的通天塔](../babel/README.md)) 把源码转化为 ESLint 默认支持的 AST，并保持住源码的行列数，方便输出错误的定位。 光指定 `@babel/eslint-parser` 还不够，解析器的作用只是负责把 ESLint 不能识别的语法特性转化为 ESLint 能识别的，但它本身不包括规则，还需要使用 `@babel/eslint-plugin` 插件来提供对应的规则，才能正常执行 ESLint 对代码的检测。
+
+> 更多详情，请参考 [@babel/eslint-parser](https://github.com/babel/babel/tree/master/eslint/babel-eslint-parser)  官方文档
+
+至此，常见的配置已经介绍完了，更多配置介绍，请参考 ESLint 官网文档 [配置 ESLint](https://cn.eslint.org/docs/user-guide/configuring)
 
 
 ## 如何守住优雅的护城河
 
+前面也提到了到目前为止，我们只是‘挖好了护城河’，可是河里并没有水，敌人想要过来依然可以畅行无阻。源码检测完全依赖开发人员自觉手动运行 `npm run eslint` 来完成，那怎么样才能让让‘护城河’真正发挥作用呢？
+
 ### 享受开发时的乐趣
 
-ESLint && VS Code
+首当其冲的需求就是在开发的过程中最好就能做代码检测，而不是需要代码开发完成后，运行 `npm run eslint` 才能看到错误，此时可能已经一堆错误了。
+
+以 VS Code 编辑器为例（其它编辑器应该也有类似的插件），安装 [ESLint 扩展插件](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) 。该编辑器插件会读取当前项目中的 .eslintrc.js 的配置，并在编辑器中提示出来。
+
+![](./img/error.png)
+
+首先可以看到目录树上，有问题的文件变红，点开这个文件，对应的行上也会有错误提示，鼠标停留会提示错误的信息方便修复。但眼尖的同学可能已经发现了，运行 `npm run eslint` 不光能检测 index.js 中的错误，还能检测 index.vue 中的错误，一共是 7 个错误。而编辑器只检测了 index.js 的错误。
+
+**原来是编辑器的 ESLint 插件默认只能检测 .js 的文件，需要调整编辑器 ESLint 插件的设置，让它支持 .vue 文件的检测。** 
+
+![](./img/setting.png)
+
+如上图所示：
+
+1. 找到插件的设置入口
+
+2. 因为增加对 vue 文件的支持是针对项目的，并不是所有项目都是 vue 项目，所以我们把设置生效到工作区
+
+3. 在 Validata 配置中增加 vue
+
+    ![](./img/eslint_vue.png)
+
+![](./img/eslint_vue1.png)
+
+可以看到，index.vue 文件也已经变红，里面的错误也能够被检测了，并且在编辑器的“问题”栏也能显示项目所有的 7 条错误，和运行 `npm run eslint` 效果一样了。
 
 ### 将乐趣进行到底
 
