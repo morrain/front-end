@@ -13,7 +13,7 @@
 
 ## 前言
 
-战国时期强大的赵国想要一举攻打并吞并北边的燕国，而小国“梁城”位居两国之间，为战略要冲，是必取之地。于是赵国派遣大将巷淹中，率领十万大军攻打仅有四千人的“梁城”，梁城王向以守城著称的墨家求救。但梁城等到的却是一个其貌不扬、孤身应战的墨家侠客革离，谁料革离足智多谋，指挥梁城四千军民逼退十万赵军，功成身退。
+战国时期强大的赵国想要一举攻打并吞并北边的燕国，而小国“梁城”位居两国之间，为战略要冲，是必取之地。于是赵国派遣大将巷淹中，率领十万大军攻打仅有四千人的“梁城”，梁城王向以守城著称的墨家求救。但梁城等到的却是一个其貌不扬、孤身应战的墨家侠客革离，谁料革离足智多谋，指挥梁城四千军民抵御十万赵军，功成身退。
 
 ![](./img/mogong.jpeg)
 
@@ -160,7 +160,7 @@ console.log(sum);
 
 ![](./img/errors.png)
 
-可以看到，检查出来了如此多的错误，其中 'let 要使用 const 替换'，'不能使用封号'等属于 `standard` 规范中指定的规则，除了风格外，还检查出了'未定义的变量'等语法错误，并逐一给出提示。
+可以看到，检查出来了如此多的错误，其中‘let 要使用 const 替换’，‘不能使用封号’等属于 `standard` 规范中指定的规则，除了风格外，还检查出了‘未定义的变量’等语法错误，并逐一给出提示。
 
  如果想自动修复检查出来的问题，怎么办呢？ eslint 支持使用 `--fix` 参数。修改 package.json 中的 eslint 命令为 `eslint src/** --fix`
 
@@ -180,7 +180,7 @@ console.log(sum)
 
 **可以看到，ESLint 自动修复了可以被修复的风格问题，同时对于不能被自动修复问题给出提示。**
 
-> 更多 eslint cli 配置参数,请参考官网[cli](https://cn.eslint.org/docs/user-guide/command-line-interface)的详细介绍。
+> 更多 eslint cli 配置参数,请参考官网 [cli](https://cn.eslint.org/docs/user-guide/command-line-interface) 的详细介绍。
 
 到这里我们已经‘挖好了护城河’，可是河里并没有水，敌人想要过来依然可以畅行无阻。完全依赖开发人员自觉手动运行 `npm run eslint` 来完成，那怎么样才能让让‘护城河’真正发挥作用呢？我们先看下 ESLint 常见的配置含义，然后在 [如何守住优雅的护城河](#如何守住优雅的护城河)详细介绍。
 
@@ -219,7 +219,7 @@ demo 中的 env 配置就是为相应的环境定义了一组预定义的全局�
 const dom = $('id')
 ```
 
-2. 在配置文件中配置全局变量，将 globals 配置属性设置为一个对象，该对象包含以你希望使用的每个全局变量。对于每个全局变量键，将对应的值设置为 "writable" 以允许重写变量，或 "readonly" 不允许重写变量。例如：
+2. 在配置文件中配置全局变量，将 globals 配置属性设置为一个对象，该对象包含以你希望使用的每个全局变量。对于每个全局变量，将对应的键值设置为 "writable" 以允许重写变量，或 "readonly" 不允许重写变量。例如：
 
 ```json
 {
@@ -230,17 +230,17 @@ const dom = $('id')
 ```
 3. 使用 env 配置。为了避免上面两种方案需要一一配置每一个全局变量的麻烦，ESLint 预设了好多环境全局变量集合，譬如我们要使用 jQuery 提供的全局变量，只要需要在 env 配置中添加 `jquery:true`就可以了。
 
-demo 中 env 的配置，`es2020:true` 表示增加了 es2020 的语法特性，`node:true` 表示增加 node 中所有的全局变量。更多的环境可以参考官网[指定环境](https://cn.eslint.org/docs/user-guide/configuring#specifying-environments) 相关章节。
+demo 中 env 的配置，`es2020:true` 表示增加了 es2020 的语法特性，`node:true` 表示增加 node 中所有的全局变量。更多的环境可以参考官网 [指定环境](https://cn.eslint.org/docs/user-guide/configuring#specifying-environments) 相关章节。
 
 #### 扩展
 
-在 .eslintrc.js 中 rules 用来配置 ESLint 的规则，具体配置规则的方法请参考官网[如何配置规则](https://cn.eslint.org/docs/user-guide/configuring#configuring-rules)以及[所有规则的说明](https://cn.eslint.org/docs/rules/)，这里不作详细介绍，同样为了方便使用，ESLint 使用 `extends` 配置来一次性生效一整套规则。譬如 demo 中 `rules` 中没有配置任何规则，因为通过 `extends` 配置了符合 standardjs 规范的规则集合。
+在 .eslintrc.js 中 rules 用来配置 ESLint 的规则，具体配置规则的方法请参考官网 [如何配置规则](https://cn.eslint.org/docs/user-guide/configuring#configuring-rules) 以及 [所有规则的说明](https://cn.eslint.org/docs/rules/)，这里不作详细介绍，同样为了方便使用，ESLint 使用 `extends` 配置来一次性生效一整套规则。譬如 demo 中 `rules` 中没有配置任何规则，因为通过 `extends` 配置了符合 `standard` 规范的规则集合。
 
 ESLint支持三种类型的扩展：
 
-1. `eslint:` 开头的 ESLint 官方扩展。包括 `eslint:recommended` 和 `eslint:all`，其中 `eslint:recommended` 是推荐的一套规则，`eslint:all` 是 ESLint 中的所有规则，不推荐使用，因为可能随时被 ESLint 更改。
+1. 'eslint:' 开头的 ESLint 官方扩展。包括 `eslint:recommended` 和 `eslint:all`，其中 `eslint:recommended` 是推荐的一套规则，`eslint:all` 是 ESLint 中的所有规则，不推荐使用，因为可能随时被 ESLint 更改。
 
-2. 共享的扩展。通过 npm 提供一套共享的配置，包名前缀必须为 `eslint-config-``，extends` 属性值可以省略包名的前缀 `eslint-config-`。demo 中 `stanard` 对应的就是 package.json 中 'eslint-config-standard' 这个包提供的一套规则。
+2. 共享的扩展。通过 npm 提供一套共享的配置，包名前缀必须为 `eslint-config-`，`extends ` 属性值可以省略包名的前缀 `eslint-config-`。demo 中 `stanard` 对应的就是 package.json 中 'eslint-config-standard' 这个包提供的一套规则。
 
 3. 插件中提供的扩展。在 demo 初始化时，我们可以看到 `eslint-plugin-node` 等插件包被安装，这些插件包是 `eslint-config-standard` 的依赖，所以会被自动安装，这些插件包也提供了一些规则可供扩展。
 
@@ -266,7 +266,7 @@ ESLint支持三种类型的扩展：
 
 上面讲扩展时，已经提到了如何加载插件中的扩展配置。既然已经有了这么多扩展可以使用，为什么还需要插件呢？因为 ESLint 只能检查标准的 JavaScript 语法，如果你使用 Vue 单文件组件， ESLint 就束手无策了。这个时候，相应框架就会提供配套的插件来定制特定的规则进行检查。插件扩展类似，也有固定的前缀 `eslint-plugin-`，配置时可以有省略前缀。
 
-我们新加一个 Vue 的单文件组件如下，执行 `npm run eslint` 后发现没有效果，没不能检查 .vue 中的错误，此时就需要安装 `eslint-plugin-vue` 插件。
+我们新加一个 Vue 的单文件组件如下，执行 `npm run eslint` 后发现没有效果，并不能检查 .vue 中的错误，此时就需要安装 `eslint-plugin-vue` 插件。
 
 ```html
 // src/index.vue
@@ -313,9 +313,9 @@ module.exports = {
 }
 ```
 
-demo 中 parserOptions 为解析器配置，ESLint 默认只支持 ES5 的语法，但可以通过解析器配置来设置支持的 ES 版本，譬如 demo 中的 `ecmaVersion:11` 表示支持 ES11(即ES2020) 的语法，**这里需要注意的是通过解析器配置只是支持语法，对于该版本新增加的全局变量依然要通过 `env` 配置来完成支持，相关说明以及更多的解析器配置请参考官网[指定解析器配置](https://cn.eslint.org/docs/user-guide/configuring#specifying-parser-options)** 
+demo 中 parserOptions 为解析器配置，ESLint 默认只支持 ES5 的语法，但可以通过解析器配置来设置支持的 ES 版本，譬如 demo 中的 `ecmaVersion:11` 表示支持 ES11(即ES2020) 的语法，**这里需要注意的是通过解析器配置只是支持语法，对于该版本新增加的全局变量依然要通过 `env` 配置来完成支持，相关说明以及更多的解析器配置请参考官网 [指定解析器配置](https://cn.eslint.org/docs/user-guide/configuring#specifying-parser-options)** 
 
-ESLint 默认是使用 [ESPree](https://github.com/eslint/espree)作为其解析器的，但也可以通过 parser 字段指定一个不同的解析器，可以参考官网[指定解析器](https://cn.eslint.org/docs/user-guide/configuring#specifying-parser)。
+ESLint 默认是使用 [ESPree](https://github.com/eslint/espree) 作为其解析器的，但也可以通过 parser 字段指定一个不同的解析器，可以参考官网 [指定解析器](https://cn.eslint.org/docs/user-guide/configuring#specifying-parser)。
 
 那为什么需要指定解析器呢？因为 ESLint 默认的解析器只支持已经形成 ES 标准的语法特性，对于处于实验阶段以及非标准的（譬如 Flow、TypeScript等）需要使用 Babel 转换的语法，就需要指定由 Babel 提供的 `@babel/eslint-parser` 了。由此可见，正常情况下，是不需要指定第三方的解析器的。
 
@@ -432,13 +432,13 @@ npm i -D lint-staged
 
 ### 安装“黑匣子”
 
-飞起上都装有黑匣子，当出现故障时，可以很方便的回溯航行记录，发现问题。我们的代码仓库也一样，每次提交都应该有记录。但每个同学提交时的信息各不一样，没有统一的格式，导致后面回溯提交记录时眼花缭乱，效率很低。
+飞机上都装有黑匣子，当出现故障时，可以很方便的回溯航行记录，发现问题。我们的代码仓库也一样，每次提交都应该有记录。但每个同学提交时的信息各不一样，没有统一的格式，导致后面回溯提交记录时眼花缭乱，效率很低。
 
 接下来看下，如何约束提交，来守住提交日志优雅的这道大门。
 
 [commitizen](https://github.com/commitizen/cz-cli) 是用来格式化 git commit message 的工具，它提供了一种问询式的方式去获取所需的提交信息。
 
-[conventional-changelog](https://github.com/conventional-changelog/conventional-changelog)是用来规定提交时需要输入哪些信息，譬如提交的类型是修复问题还是功能开发，提交影响范围等等，conventional-changelog 是官网提供的规则，完全可以根据项目实际情况自已开发适合的规则。
+[conventional-changelog](https://github.com/conventional-changelog/conventional-changelog) 是用来规定提交时需要输入哪些信息，譬如提交的类型是修复问题还是功能开发，提交影响范围等等，conventional-changelog 是官网提供的规则，完全可以根据项目实际情况自已开发适合的规则。
 
 [standard-version](https://github.com/conventional-changelog/standard-version) 提交信息并约束后，提交的日志信息就会比较统一，使用 standard-version 很容易自动生成提交的日志 CHANGELOG 文件
 
@@ -487,8 +487,10 @@ standard-version 会自动 bump 项目的版本号，并生成两个版本之间
 1. 安装并配置
 
     ```
+    // 安装工具包
     npm install --save-dev @commitlint/{config-conventional,cli}
 
+    // 生成 commitlint 配置文件 
     echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
     ```
 
@@ -513,6 +515,8 @@ standard-version 会自动 bump 项目的版本号，并生成两个版本之间
     ![](./img/commitlint.png)
 
 ## 总结
+
+基于 ESLint ，我们成功化身为程序员界的‘革离’，守好了我们的战场，让属于我们的天空之城干净纯粹、整齐划一，在优雅里翱翔！
 
 ## 参考文献
 
