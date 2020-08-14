@@ -518,6 +518,10 @@ standard-version 会自动 bump 项目的版本号，并生成两个版本之间
 
 基于 ESLint ，我们成功化身为程序员界的‘革离’，守好了我们的战场，让属于我们的天空之城干净纯粹、整齐划一，在优雅里翱翔！
 
+下一节，我们聊聊打包工具 webpack
+
+![](./img/webpack.png)
+
 ## 参考文献
 
 [深入理解 ESLint](https://juejin.im/post/6844903901292920846)

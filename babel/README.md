@@ -739,9 +739,9 @@ module.exports = { targets, presets, plugins, polyfills }
 
 本文为了讲解方便，都是用 Babel 原生的 @babel/cli 来编译文件，实际使用中，更多的是结合 webpack、rollup 这样第三方的工具来使用的。
 
-所以下一节，我们聊聊打包工具 webpack
+那下一节呢，我们一起聊聊如何守住优雅的护城河
 
-![](./img/webpack.png)
+![](./img/eslint.png)
 
 
 ## 参考文献
