@@ -11,11 +11,15 @@
 
 - [CommonJS：不是前端却革命了前端](./module/README.md)
 
-    主要介绍了 CommonJS 规范、CommonJS 实现以及前端现有的模块化方案
+    CommonJS 最初是服务于服务端的，所以我说 CommonJS 不是前端，但它的载体是前端语言 JavaScript，为后面前端模块化的盛行产生了深远的影响，奠定了结实的基础。CommonJS：不是前端却革命了前端!
 
 - [Babel：把 ES6 送上天的通天塔](./babel/README.md)
 
+    Babel 是巴比伦文化里的通天塔，用来给 6to5 这个项目命名真得太贴切了！羡慕这些牛逼的人，不光代码写得好，还这么有文化，不像我们，起个变量名都得憋上半天，吃了没有文化的亏。
+
 - [ESlint：守住优雅的护城河](./eslint/README.md)
+
+    基于 ESLint ，我们成功化身为程序员界的‘革离’，守好了我们的战场，让属于我们的天空之城干净纯粹、整齐划一，在优雅里翱翔！
 
 - [webpack：它是如此，但远不止于此](./webpack/README.md)
 
