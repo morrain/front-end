@@ -239,7 +239,7 @@ ESLint支持三种类型的扩展：
 
 1. 'eslint:' 开头的 ESLint 官方扩展。包括 `eslint:recommended` 和 `eslint:all`，其中 `eslint:recommended` 是推荐的一套规则，`eslint:all` 是 ESLint 中的所有规则，不推荐使用，因为可能随时被 ESLint 更改。
 
-2. 共享的扩展。通过 npm 提供一套共享的配置，包名前缀必须为 `eslint-config-`，`extends ` 属性值可以省略包名的前缀 `eslint-config-`。demo 中 `stanard` 对应的就是 package.json 中 'eslint-config-standard' 这个包提供的一套规则。
+2. 共享的扩展。通过 npm 包提供一套共享的配置，包名前缀必须为 `eslint-config-`，`extends ` 属性值可以省略包名的前缀 `eslint-config-`。demo 中 `stanard` 对应的就是 package.json 中 'eslint-config-standard' 这个包提供的一套规则。
 
 3. 插件中提供的扩展。在 demo 初始化时，我们可以看到 `eslint-plugin-node` 等插件包被安装，这些插件包是 `eslint-config-standard` 的依赖，所以会被自动安装，这些插件包也提供了一些规则可供扩展。
 
@@ -263,7 +263,7 @@ ESLint支持三种类型的扩展：
 
 #### 插件
 
-上面讲扩展时，已经提到了如何加载插件中的扩展配置。既然已经有了这么多扩展可以使用，为什么还需要插件呢？因为 ESLint 只能检查标准的 JavaScript 语法，如果你使用 Vue 单文件组件， ESLint 就束手无策了。这个时候，相应框架就会提供配套的插件来定制特定的规则进行检查。插件扩展类似，也有固定的前缀 `eslint-plugin-`，配置时可以有省略前缀。
+上面讲扩展时，已经提到了如何加载插件中的扩展配置。既然已经有了这么多扩展可以使用，为什么还需要插件呢？因为 ESLint 只能检查标准的 JavaScript 语法，如果你使用 Vue 单文件组件， ESLint 就束手无策了。这个时候，相应框架就会提供配套的插件来定制特定的规则进行检查。插件和扩展类似，也有固定的前缀 `eslint-plugin-`，配置时也可以省略前缀。
 
 我们新加一个 Vue 的单文件组件如下，执行 `npm run eslint` 后发现没有效果，并不能检查 .vue 中的错误，此时就需要安装 `eslint-plugin-vue` 插件。
 
@@ -333,7 +333,7 @@ ESLint 默认是使用 [ESPree](https://github.com/eslint/espree) 作为其解�
 
 **首当其冲的需求就是在开发的过程中最好就能做代码检测**，而不是需要代码开发完成后，运行 `npm run eslint` 才能看到错误，此时可能已经一堆错误了。
 
-以 VS Code 编辑器为例（其它编辑器应该也有类似的插件），安装 [ESLint 扩展插件](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) 。该编辑器插件会读取当前项目中的 .eslintrc.js 的配置，并在编辑器中提示出来。
+以 VS Code 编辑器为例（其它编辑器应该也有类似的插件），安装 [ESLint 扩展插件](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) 。该编辑器插件会读取当前项目中的 .eslintrc.js 的配置，并在编辑器中把不符合规则的错误给提示出来。
 
 ![](./img/error.png)
 
@@ -379,7 +379,7 @@ ESLint 默认是使用 [ESPree](https://github.com/eslint/espree) 作为其解�
 
 ### 将乐趣进行到底
 
-现在我们已经能做到了，在开发时检测出来错误并且方便开发修复问题，这依赖于开发同学自觉，如果开发同学不自觉或者忘记了，此时提交代码就依然会把错误的代码提交到仓库中去。此时我们需要借助 [husky](https://github.com/typicode/husky#readme) 来拦截 git 操作，在 git 操作之前再进行一次代码检测。
+现在我们已经能做到了在开发时检测出来错误并且方便开发人员及时修复问题，但这依赖于开发同学自觉，如果开发同学不自觉或者忘记了，此时提交代码就依然会把错误的代码提交到仓库中去。此时我们需要借助 [husky](https://github.com/typicode/husky#readme) 来拦截 git 操作，在 git 操作之前再进行一次代码检测。
 
 ![](./img/husky.png)
 
@@ -404,7 +404,7 @@ npm i -D husky
 
 此时提交前会检查 src 下的所有文件，由于 demo 中源码是有问题的，ESLint 检查通不过，所以现在无法提交，从而阻断开发忘记修复 ESLint 检查出来问题的情况。
 
-那对于老的项目，可以已能存在很多遗留的风格问题，导致 ESLint 检查通不过，此时又不可能把所有问题都一一修复掉，阻止提交势必会造成影响。另外对于单次提交而言，如果每次都检查 src 下的所有文件，也是没有必要的。所以我们需要使用 [lint-staged](https://github.com/okonet/lint-staged) 工具只针对当前修改的部分进行检测。
+那对于老的项目，可能已经存在很多遗留的风格问题，导致 ESLint 检查通不过，此时又不可能把所有问题都一一修复掉，全盘阻止提交势必会造成影响。另外对于单次提交而言，如果每次都检查 src 下的所有文件，也是没有必要的。所以我们需要使用 [lint-staged](https://github.com/okonet/lint-staged) 工具只针对当前修改的部分进行检测。
 
 2. 安装并配置 lint-staged
 
@@ -433,9 +433,9 @@ npm i -D lint-staged
 
 ### 安装“黑匣子”
 
-飞机上都装有黑匣子，当出现故障时，可以很方便的回溯航行记录，发现问题。我们的代码仓库也一样，每次提交都应该有记录。但每个同学提交时的信息各不一样，没有统一的格式，导致后面回溯提交记录时眼花缭乱，效率很低。
+飞机上都装有黑匣子，当出现故障时，可以很方便的回溯航行记录，发现问题。我们的代码仓库也一样，每次提交都应该有记录。但每个开发同学提交时输入的信息各不一样，没有统一的格式，导致后面回溯提交记录时眼花缭乱，效率很低。
 
-接下来看下，如何约束提交，来守住提交日志优雅的这道大门。
+接下来看下，如何约束提交，来守住优雅得提交日志这道大门。
 
 ![](./img/commitzen_pic.png)
 
@@ -519,7 +519,7 @@ standard-version 会自动 bump 项目的版本号，并生成两个版本之间
 
 ## 总结
 
-基于 ESLint ，我们成功化身为程序员界的‘革离’，守好了我们的战场，让属于我们的天空之城干净纯粹、整齐划一，在优雅里翱翔！
+**基于 ESLint ，我们成功化身为程序员界的‘革离’，守好了我们的战场，让属于我们的天空之城干净纯粹、整齐划一，在优雅里翱翔！**
 
 下一节，我们聊聊打包工具 webpack
 
