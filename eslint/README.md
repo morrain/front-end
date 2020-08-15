@@ -15,9 +15,11 @@
 
 战国时期强大的赵国想要一举攻打并吞并北边的燕国，而小国“梁城”位居两国之间，为战略要冲，是必取之地。于是赵国派遣大将巷淹中，率领十万大军攻打仅有四千人的“梁城”，梁城王向以守城著称的墨家求救。但梁城等到的却是一个其貌不扬、孤身应战的墨家侠客革离，谁料革离足智多谋，指挥梁城四千军民抵御十万赵军，功成身退。
 
-![](./img/mogong.jpeg)
+![](./img/mogong.png)
 
-“梁城”就好比我们的项目仓库，“梁城”的秩序取决于“革离”有没有守好它！那我们的项目仓库呢？你愿意看到城中杂乱无章、毫无规则、乱象丛生还是愿意看到城中秩序井然、风格统一、整齐有序？如何成里程序员里的“革离”，守好属于我们的天空之城？
+“梁城”就好比我们的项目仓库，“梁城”的秩序取决于“革离”有没有守好它！那我们的项目仓库呢？**你愿意看到城中杂乱无章、毫无规则、乱象丛生还是愿意看到城中秩序井然、风格统一、整齐有序？如何成里程序员里的“革离”，守好属于我们的天空之城？**
+
+![](./img/git.png)
 
 ## 关于 ESLint
 
@@ -41,24 +43,21 @@ ESLint 最初是由 Nicholas C. Zakas 于 2013 年 6 月创建的开源项目。
 
 ### 开山鼻祖 JSLint
 
-![](./img/jslint.jpg)
-
 2008年，有一本非常著名的书《JavaScript语言精粹》出版，因为封面图是一个蝴蝶，所以俗称"蝴蝶书"。非常薄的一本书，是适合所有入门 JavaScript 必读并且要读很多遍的一本书。这本书的作者叫 Douglas Crockford。
 
-> Douglas Crockford 是一名来自 Yahoo! 的资深 JavaScript 架构师，以创造和维护 JSON (JavaScriptObject Notation) 格式而为大家所熟知。他定期在各类会议上发表有关高级 JavaScript 的主题演讲。他也是 ECMAScript 委员会的成员之一。
-
-![](./img/js.jpg)
+![](./img/jslint.png)
 
 从《JavaScript语言精粹》的书名就可以看出来，全书悉数了 JavaScript 语言的优美特性，同时在书籍的最后面，作者也毫不客气的列举了 JavaScript 的糟粕和鸡肋的地方，从书籍中的笔风就能看出，Douglas 是个眼里容不得瑕疵的人，于是在书籍最后也介绍了作者在 2002 年开发的 JSLint 工具，Douglas 定义了所有 JSLint 的规则，对于糟粕的语法是严格不让使用的，如果你要使用JSLint，就必须接受它所有规则。
 
 ### 继往开来 JSHint
 
-![](./img/jshint.jpeg)
-
 2011 年 12 月 20 日，Anton Kovalyov 发表了一篇标志性的文章：[Why I forked JSLint to JSHint](https://medium.com/@anton/why-i-forked-jslint-to-jshint-73a72fd3612)，指出了 JSLint 存在的几个主要问题：
 
 * 令人不安地固执己见，没有提供一些规则的配置
 * 对社区反馈不关注
+
+![](./img/jshint.png)
+
 
 于是 JSHint 就诞生了，它在 JSLint 的基础上，在社区开发者共同努力下，加入了如下特性：
 
@@ -70,11 +69,11 @@ ESLint 最初是由 Nicholas C. Zakas 于 2013 年 6 月创建的开源项目。
 
 ### 重新出发 ESLint
 
-![](./img/eslint.png)
-
 JSLint 是从 JSHint 继承而来，所以沿用了 [JSLint Top Down Operator Precedence](http://crockford.com/javascript/tdop/tdop.html)（自顶向下的运算符优先级）技术实现源码的解析，但前端爆发式增长带来的巨大需求让 JSHint 变得愈加难以应对，通过暴露 AST 信息来支持第三方插件无疑是一剂良方。
 
 > AST：[抽象语法树](https://en.wikipedia.org/wiki/Abstract_syntax_tree)
+
+![](./img/eslint.png)
 
 于是《JavaScript 高级程序设计》作者 Nicholas C. Zakas 于 2013 年 6 月创建了 ESLint，ESLint 将源代码解析成 AST，然后检测 AST 来判断代码是否符合规则，为 ESLint 的高可扩展性奠定了结实的基础。ESLint 保持内核足够简单，只有 100 行代码，规则的实现完全和内核分离。
 
@@ -382,6 +381,8 @@ ESLint 默认是使用 [ESPree](https://github.com/eslint/espree) 作为其解�
 
 现在我们已经能做到了，在开发时检测出来错误并且方便开发修复问题，这依赖于开发同学自觉，如果开发同学不自觉或者忘记了，此时提交代码就依然会把错误的代码提交到仓库中去。此时我们需要借助 [husky](https://github.com/typicode/husky#readme) 来拦截 git 操作，在 git 操作之前再进行一次代码检测。
 
+![](./img/husky.png)
+
 1. 安装并配置 husky
 
 ```
@@ -435,6 +436,8 @@ npm i -D lint-staged
 飞机上都装有黑匣子，当出现故障时，可以很方便的回溯航行记录，发现问题。我们的代码仓库也一样，每次提交都应该有记录。但每个同学提交时的信息各不一样，没有统一的格式，导致后面回溯提交记录时眼花缭乱，效率很低。
 
 接下来看下，如何约束提交，来守住提交日志优雅的这道大门。
+
+![](./img/commitzen_pic.png)
 
 [commitizen](https://github.com/commitizen/cz-cli) 是用来格式化 git commit message 的工具，它提供了一种问询式的方式去获取所需的提交信息。
 
