@@ -441,14 +441,14 @@ npm i -D lint-staged
 
 [commitizen](https://github.com/commitizen/cz-cli) 是用来格式化 git commit message 的工具，它提供了一种问询式的方式去获取所需的提交信息。
 
-[conventional-changelog](https://github.com/conventional-changelog/conventional-changelog) 是用来规定提交时需要输入哪些信息，譬如提交的类型是修复问题还是功能开发，提交影响范围等等，conventional-changelog 是官网提供的规则，完全可以根据项目实际情况自已开发适合的规则。
+[cz-conventional-changelog](https://github.com/commitizen/cz-conventional-changelog) 是用来规定提交时需要输入哪些信息，譬如提交的类型是修复问题还是功能开发，提交影响范围等等，cz-conventional-changelog 是官网提供的规则，完全可以根据项目实际情况自已开发适合的规则。
 
 [standard-version](https://github.com/conventional-changelog/standard-version) 提交信息并约束后，提交的日志信息就会比较统一，使用 standard-version 很容易自动生成提交的日志 CHANGELOG 文件
 
 1. 安装并配置
 
 ```
-npm i -D commitizen conventional-changelog standard-version
+npm i -D commitizen cz-conventional-changelog standard-version
 ```
 
 ```json
